@@ -33,18 +33,9 @@ export {
 
 export { toArrayAst, fromArrayAst };
 
-// export {
-//   TexprlLanguageSupport,
-//   texprlCompletion,
-//   texprlParser,
-//   texprl,
-// }
+const nullFunction = () => {};
 
-function generatePluginFromWidgets(widgets) {
-  return null;
-}
-
-function checkboxes(view, texprl) {
+function addWidgets(view, texprl) {
   let widgets = [];
   for (let { from, to } of view.visibleRanges) {
     syntaxTree(view.state).iterate({
@@ -69,11 +60,11 @@ function checkboxes(view, texprl) {
   return Decoration.set(widgets);
 }
 
-const checkboxPlugin = (texprl) => {
+const widgetsPlugin = (texprl) => {
   return ViewPlugin.fromClass(
     class {
       constructor(view) {
-        this.decorations = checkboxes(view, texprl);
+        this.decorations = addWidgets(view, texprl);
       }
 
       update(update) {
@@ -87,7 +78,7 @@ const checkboxPlugin = (texprl) => {
         });
 
         if (update.docChanged || update.viewportChanged) {
-          this.decorations = checkboxes(update.view, texprl);
+          this.decorations = addWidgets(update.view, texprl);
         }
       }
     },
@@ -111,8 +102,9 @@ export class TexprlEditor {
     this.widgets = [].concat(opts.widgets);
     this.functions = [].concat(opts.functions);
     this.lookup = opts.lookup ? opts.lookup : [];
+    this.onDispatch = opts.onDispatch || nullFunction;
+
     this._setupCodemirror(initialDoc);
-    this.onDispatch = opts.onDispatch;
   }
 
   _onDispatch = (transaction) => {
@@ -166,7 +158,7 @@ export class TexprlEditor {
     let startState = EditorState.create({
       doc: initialDoc || "",
       extensions: [
-        checkboxPlugin(this),
+        widgetsPlugin(this),
         basicSetup,
         language.of(
           wast(() => {
@@ -194,6 +186,7 @@ export class TexprlEditor {
       parent: this.element,
       dispatch: this._onDispatch,
     });
+    this.onDispatch(this);
   }
 
   setLookup(lookup) {
