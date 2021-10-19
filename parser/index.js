@@ -1,9 +1,29 @@
-import { parser } from "./lang.js";
+import { parser as parserSetup } from "./lang.js";
 import { foldNodeProp, foldInside, indentNodeProp } from "@codemirror/language";
 import { styleTags, tags } from "@codemirror/highlight";
 import { LRLanguage } from "@codemirror/language";
 import { LanguageSupport } from "@codemirror/language";
 import { syntaxTree } from "@codemirror/language";
+
+
+const parser = parserSetup.configure({
+  props: [
+    styleTags({
+      Name: tags.variableName,
+      Number: tags.number,
+      Bool: tags.bool,
+      String: tags.string,
+      ",": tags.separator,
+      "[ ]": tags.squareBracket,
+      "{ }": tags.brace,
+      FnName: tags.number,
+      List: tags.list,
+      Lookup: tags.atom,
+    }),
+  ],
+});
+
+export {parser};
 
 const MATH = ["+", "-", "/", "*"];
 
@@ -139,22 +159,7 @@ export function toArrayAst(view, texprl) {
 }
 
 export const exampleLanguage = LRLanguage.define({
-  parser: parser.configure({
-    props: [
-      styleTags({
-        Name: tags.variableName,
-        Number: tags.number,
-        Bool: tags.bool,
-        String: tags.string,
-        ",": tags.separator,
-        "[ ]": tags.squareBracket,
-        "{ }": tags.brace,
-        FnName: tags.number,
-        List: tags.list,
-        Lookup: tags.atom,
-      }),
-    ],
-  }),
+  parser,
   languageData: {
     closeBrackets: { brackets: ["(", "[", '"'] },
     indentOnInput: /^\s*[\}\]]$/,
