@@ -1,0 +1,45 @@
+@precedence { Lookup, Number, Bool, FunctionName, div @left, times @left, plus @left, minus @left }
+
+commaSep<content> { "" | content ("," content)* (",")* }
+
+@top Program { FunctionExpr }
+
+@skip { whitespace }
+
+FunctionExpr {
+  functionName "(" commaSep<fexpression> ")"
+}
+
+List { "[" commaSep<expression> "]" }
+
+expression { Lookup | Bool | String | Number | binaryExpressionWrap | FunctionExpr }
+
+fexpression { Lookup | Bool | String | Number | binaryExpressionWrap | FunctionExpr | List }
+
+binaryExpressionWrap {
+  "(" BinaryExpression ")" | BinaryExpression
+}
+
+BinaryExpression {
+  expression !times Times expression |
+  expression !div Div expression |
+  expression !plus Plus expression |
+  expression !minus Minus expression
+}
+
+@tokens {
+  Bool { "true" | "false" }
+  functionName { $[a-z_]+ ($[a-z_0-9]+)* }
+  Integer { std.digit+ }
+  Float { std.digit+ "." std.digit+ }
+  Number { Integer | Float }
+  Div { "/" }
+  Plus { "+" }
+  Times { "*" }
+  Minus { "-" }
+  String { '"' (!["\\] | "\\" _)* '"' }
+  whitespace { $[ \n\r\t] }
+  Lookup { "#" ($[a-z_0-9]+)* }
+
+  @precedence { Lookup, Number, Bool, functionName }
+}

@@ -1,0 +1,102 @@
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+:root {
+  --color-gray-1: #aaa;
+}
+
+body {
+  font-family: 'Noto Serif', serif;
+  margin: 0;
+}
+
+.main {
+  line-height: 1.45;
+  padding: 1.2em;
+  max-width: 800px;
+}
+
+.footer {
+  background: #eee;
+  border-top: solid 1px #e1e1e1;
+  padding: 1.2em;
+  min-height: 200px;
+  margin-top: 4.6em;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Noto Sans', sans-serif;
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+
+h1 + p, h2 + p, h3 + p, h4 + p {
+  margin-top: 0.4em;
+}
+
+h2, h3, h4 {
+  font-weight: 400;
+}
+
+a {
+  color: #3f51b5;
+}
+
+textarea, pre, code {
+  font-family: 'Noto Sans Mono', monospace;
+  font-size: 0.9em;
+}
+
+textarea {
+  resize: vertical;
+  display: block;
+}
+
+#editor {
+  border: solid 1px var(--color-gray-1);
+}
+
+#debug {
+  border: solid 1px var(--color-gray-1);
+}
+
+code {
+  background: #f4f4f4;
+  padding: 0 2px;
+  border-radius: 2px;
+  border: solid 1px #eee;
+}
+
+pre {
+  background: #f4f4f4;
+  padding: 0.8em;
+  border-radius: 2px;
+  border: solid 1px #eee;
+}
+
+pre code {
+  all: unset;
+}
+
+@media (min-width: 940px) {
+  .editor-panes {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    column-gap: 1.2em;
+    width: calc(100vw - (1.2em*2) - 1.2em);
+  }
+
+  .editor-panes > *:nth-child(1) { order: 1; }
+  .editor-panes > *:nth-child(2) { order: 3; }
+  .editor-panes > *:nth-child(3) { order: 2; }
+  .editor-panes > *:nth-child(4) { order: 4; }
+  .editor-panes > *:nth-child(5) { order: 5; }
+  .editor-panes > *:nth-child(6) { order: 7; }
+  .editor-panes > *:nth-child(7) { order: 6; }
+  .editor-panes > *:nth-child(8) { order: 8; }
+}
