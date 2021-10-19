@@ -1,4 +1,5 @@
 import stringify from "json-stringify-pretty-compact";
+import runtime from './runtime.js';
 
 import "../texprl.css";
 import {
@@ -40,47 +41,22 @@ useRuntimeEl.addEventListener("change", (e) => {
   useRuntime = checked;
 });
 
-const fn = {
-  "math": (v) => v,
-  "pow": (a, b) => Math.pow(a,b),
-  "at": (i, v) => v.at(i),
-  "+": (a, b) => a+b,
-  "-": (a, b) => a-b,
-  "*": (a, b) => a*b,
-  "/": (a, b) => a/b,
-  "array": (...v) => v,
-}
-
-function callFunction (arr) {
-  if (Array.isArray(arr)) {
-    const [op] = arr;
-    const args = arr.slice(1);
-
-    if (fn[op]) {
-      const argsToPass = args.map(callFunction);
-      return fn[op].apply(undefined, argsToPass);
-    }
-    else {
-      throw new Error(`No such function: ${op}`);
-    }
-  }
-  else {
-    return arr;
-  }
-}
-
 const exprContainerEl = document.querySelector("#expr-result-container");
 const exprResultEl = document.querySelector("#expr-result");
 const exprErrorEl = document.querySelector("#expr-error");
 
 function showDebugInfo(texprl) {
   const json = toArrayAst(texprl.view, texprl);
-  // const formatted = fromArrayAst(json, texprl);
-  // formattedEl.value = formatted;
+  try {
+    const formatted = fromArrayAst(json, texprl);
+    formattedEl.value = formatted;
+  } catch (err) {
+    formattedEl.value = `Failed: ${err}`;
+  }
 
   if (useRuntime) {
     try {
-      const result = callFunction(json[0]);
+      const result = runtime(json[0]);
       console.log("result=", result);
       exprResultEl.value = JSON.stringify(result);
       exprErrorEl.innerText = "";
