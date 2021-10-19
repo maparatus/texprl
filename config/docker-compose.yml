@@ -1,9 +1,9 @@
-version: '3.2'
+version: "3.2"
 services:
   dev:
     image: node:14.17.4-stretch
     ports:
-      - '8000:8000'
+      - "8000:8000"
     volumes:
       - ../:/code:delegated
       # On macos sharing folders with a large amount of files is very slow,
@@ -19,4 +19,3 @@ volumes:
   v_node_modules:
 networks:
   webnet:
-

@@ -1,83 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>texprl</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="./index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
   </head>
   <body>
+    <div class="main">
+      <h1>texprl</h1>
+      <p>
+        <strong>T</strong>iny <strong>expr</strong>ession
+        <strong>l</strong>anguage, is a very small language similar to languages
+        found in speadsheets.
+      </p>
+      <p>
+        The primary aim is to be a language that can be used across maputnik
+        expressions and the fielda form builder. It is therefore a language
+        without a runtime, it just returns a syntax tree in an array syntax
+        suitable for storing in a file/database. See
+        <a href="https://docs.maptiler.com/gl-style-specification/expressions/"
+          >maplibre-expressions</a
+        >
+        for an example.
+      </p>
+      <p>Contents:</p>
+      <ul>
+        <li>
+          <a href="#h-features">Features</a>
+        </li>
+        <li>
+          <a href="#h-editor">Editor</a>
+          <ul>
+            <li>
+              <a href="#h-api">API</a>
+            </li>
+            <li>
+              <a href="#h-demo">Demo</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#h-missing-features">Missing features</a>
+        </li>
+      </ul>
+      <h2 id="h-features">Features</h2>
+      <p>The features of the language include</p>
+      <ul>
+        <li>Numbers — <code>1</code>, <code>3.14</code></li>
+        <li>Strings — <code>"hello world"</code></li>
+        <li>Booleans — <code>true</code>, <code>false</code></li>
+        <li>Functions — <code>like_me(…)</code></li>
+        <li>References — <code>#130</code>, <code>#foobar</code></li>
+      </ul>
+      <p>
+        References are fairly unique to texprl and not found in many other
+        languages. They are a way to look up information from a known lookup
+        table in an editor. For example if I have a function called
+        <code>read</code> which accepts a UUID for a remote resource on a
+        server, for example
+        <code>read("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d")</code> it makes the
+        code editor really verbose and messy/hard to read. The UUID will likely
+        have a more human readable name somewhere in the system.
+      </p>
+      <h2 id="h-editor">Editor</h2>
+      <p>
+        The language comes bundled with a codemirror editor which is designed to
+        make it easy for beginners to get started with. The aims align with the
+        aims of the <em>texprl</em> language. The main feature is adding widgets
+        next to key functions to allow them to be edited in a structured way.
+      </p>
+      <p>
+        For example if we encounter a string of the format
+        <code>2020-10-02</code> we add a date picker next to the date. The user
+        will then know what <code>2020-10-02</code> means by opening the picker.
+        The idea is to educate the user with small UI hints.
+      </p>
+      <p>
+        Another example is the function <code>hsl(0,100,50)</code>. Developers
+        might be well aware that the args to that function are <code>hue</code>,
+        <code>saturation</code> and <code>lightness</code> however a user may be
+        very inexperienced with this syntax. We display a color preview to let
+        the user know that this represents a color and on click we allow the
+        user to edit that color with the parts of the color labeled. The same is
+        also true of <code>rgb(255, 0, 0)</code>
+      </p>
 
-  <div class="main">
-    <h1>texprl</h1>
-    <p>
-      <strong>T</strong>iny <strong>expr</strong>ession <strong>l</strong>anguage, is a very small language similar to languages found in speadsheets.
-    </p>
-    <p>
-    The primary aim is to be a language that can be used across maputnik expressions and the fielda form builder. It is therefore a language without a runtime, it just returns a syntax tree in an array syntax suitable for storing in a file/database. See <a href="https://docs.maptiler.com/gl-style-specification/expressions/">maplibre-expressions</a> for an example.
-    </p>
-    <p>
-      Contents:
-    </p>
-    <ul>
-      <li>
-        <a href="#h-features">Features</a>
-      </li>
-      <li>
-        <a href="#h-editor">Editor</a>
-        <ul>
-          <li>
-            <a href="#h-api">API</a>
-          </li>
-          <li>
-            <a href="#h-demo">Demo</a>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#h-missing-features">Missing features</a>
-      </li>
-    </ul>
-    <h2 id="h-features">Features</h2>
-    <p>
-      The features of the language include
-    </p>
-    <ul>
-      <li>
-        Numbers — <code>1</code>, <code>3.14</code>
-      </li>
-      <li>
-        Strings — <code>"hello world"</code>
-      </li>
-      <li>
-        Booleans — <code>true</code>, <code>false</code>
-      </li>
-      <li>
-        Functions — <code>like_me(…)</code>
-      </li>
-      <li>
-        References — <code>#130</code>, <code>#foobar</code>
-      </li>
-    </ul>
-    <p>
-    References are fairly unique to texprl and not found in many other languages. They are a way to look up information from a known lookup table in an editor. For example if I have a function called <code>read</code> which accepts a UUID for a remote resource on a server, for example <code>read("9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d")</code> it makes the code editor really verbose and messy/hard to read. The UUID will likely have a more human readable name somewhere in the system.
-    </p>
-<h2 id="h-editor">Editor</h2>
-<p>
-The language comes bundled with a codemirror editor which is designed to make it easy for beginners to get started with. The aims align with the aims of the <em>texprl</em> language. The main feature is adding widgets next to key functions to allow them to be edited in a structured way.
-</p>
-<p>
-For example if we encounter a string of the format <code>2020-10-02</code> we add a date picker next to the date. The user will then know what <code>2020-10-02</code> means by opening the picker. The idea is to educate the user with small UI hints.
-</p>
-<p>
-Another example is the function <code>hsl(0,100,50)</code>. Developers might be well aware that the args to that function are <code>hue</code>, <code>saturation</code> and <code>lightness</code> however a user may be very inexperienced with this syntax. We display a color preview to let the user know that this represents a color and on click we allow the user to edit that color with the parts of the color labeled. The same is also true of <code>rgb(255, 0, 0)</code>
-</p>
-
-<h3 id="h-api">API</h3>
-<pre><code>// Setup
+      <h3 id="h-api">API</h3>
+      <pre><code>// Setup
 const editor = texprl(el, {
   widgets: [
     {type: "Date", widget: DateWidget},
@@ -116,78 +132,83 @@ editor.setLookup([
   },
 ]);</code></pre>
 
-<h3 id="h-demo">Demo</h3>
-<div class="editor-panes">
-    <p>
-      The texprl code editor — <button id="action-auto-format">Auto format</button>
-    </p>
-    <div id="editor"></div>
-    <p>
-      The JSON representation
-    </p>
-    <textarea
-      id="s-expr"
-      style="width: 100%; height: 200px;"
-      readonly
-    ></textarea>
-    <p>
-      The raw text output
-    </p>
-    <textarea
-      id="debug"
-      style="width: 100%; height: 200px;"
-      readonly
-    ></textarea>
-    <p>
-      The formatted code. Not complete, see "<a href="#h-code-formatter">Code formatter</a>" below.
-    </p>
-    <textarea
-      id="formatted"
-      style="width: 100%; height: 200px;"
-      readonly
-      placeholder="TODO…"
-    ></textarea>
-</div>
+      <h3 id="h-demo">Demo</h3>
+      <div class="editor-panes">
+        <p>
+          The texprl code editor —
+          <button id="action-auto-format">Auto format</button>
+        </p>
+        <div id="editor"></div>
+        <p>The JSON representation</p>
+        <textarea
+          id="s-expr"
+          style="width: 100%; height: 200px"
+          readonly
+        ></textarea>
+        <p>The raw text output</p>
+        <textarea
+          id="debug"
+          style="width: 100%; height: 200px"
+          readonly
+        ></textarea>
+        <p>
+          The formatted code. Not complete, see "<a href="#h-code-formatter"
+            >Code formatter</a
+          >" below.
+        </p>
+        <textarea
+          id="formatted"
+          style="width: 100%; height: 200px"
+          readonly
+          placeholder="TODO…"
+        ></textarea>
+      </div>
 
-  <h2 id="h-missing-features">Missing features</h2>
-  <p>
-    This library is early in development and is missing some features.
-  </p>
-  <h3 id="h-code-formatter">Code formatter</h3>
-  <p>
-    At the moment we're simply setting the editor contents to a string value. However in reality we won't have the "code string" the users entered previously. but instead a JSON representation (AST-ish I guess). So we need to create a formatter that goes from this
-  </p>
-  <pre><code>["foo", ["equals", "aaa", "bbb"], ["not_equals", "ccc", "ddd"]]</code></pre>
-  <p>
-    To something like the following
-  </p>
-  <pre><code>foo(
+      <h2 id="h-missing-features">Missing features</h2>
+      <p>This library is early in development and is missing some features.</p>
+      <h3 id="h-code-formatter">Code formatter</h3>
+      <p>
+        At the moment we're simply setting the editor contents to a string
+        value. However in reality we won't have the "code string" the users
+        entered previously. but instead a JSON representation (AST-ish I guess).
+        So we need to create a formatter that goes from this
+      </p>
+      <pre><code>["foo", ["equals", "aaa", "bbb"], ["not_equals", "ccc", "ddd"]]</code></pre>
+      <p>To something like the following</p>
+      <pre><code>foo(
   equals("aaa", "bbb"),
   not_equals("ccc", "ddd")
 )</code></pre>
-  <p>
-  Basically a much simplier version of <a href="https://prettier.io/">prettier</a> for texprl.
-  </p>
-  <h3>Parse errors</h3>
-  <p>
-    We currently don't display parse errors in the codemirror editor. We do however have them from the <a href="https://lezer.codemirror.net/">lezer</a> syntax tree.
-  </p>
-  <h3>Function usage errors</h3>
-  <p>
-    We don't have any concept of types for function arguments, so the following <em>although invalid</em> won't show us any errors
-  </p>
-  <pre><code>rgb(255, rgb(100, 10, 10), 10)</code></pre>
-  <p>
-    This should be handled by the thing actually running the code (or the JSON representation of it), we do however need to add hooks to show those errors in the editor.
-  </p>
-  </div>
+      <p>
+        Basically a much simplier version of
+        <a href="https://prettier.io/">prettier</a> for texprl.
+      </p>
+      <h3>Parse errors</h3>
+      <p>
+        We currently don't display parse errors in the codemirror editor. We do
+        however have them from the
+        <a href="https://lezer.codemirror.net/">lezer</a> syntax tree.
+      </p>
+      <h3>Function usage errors</h3>
+      <p>
+        We don't have any concept of types for function arguments, so the
+        following <em>although invalid</em> won't show us any errors
+      </p>
+      <pre><code>rgb(255, rgb(100, 10, 10), 10)</code></pre>
+      <p>
+        This should be handled by the thing actually running the code (or the
+        JSON representation of it), we do however need to add hooks to show
+        those errors in the editor.
+      </p>
+    </div>
 
-  <footer class="footer">
-    Find the source code on <a href="http://github.com/orangemug/texprl">GitHub</a> and report bugs in the <a href="http://github.com/orangemug/texprl/issues">issue tracker</a>
-  </footer>
+    <footer class="footer">
+      Find the source code on
+      <a href="http://github.com/orangemug/texprl">GitHub</a> and report bugs in
+      the <a href="http://github.com/orangemug/texprl/issues">issue tracker</a>
+    </footer>
 
     <!-- scripts -->
     <script type="module" src="./index.js"></script>
   </body>
 </html>
-

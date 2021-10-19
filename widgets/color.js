@@ -1,50 +1,50 @@
-import Color from 'color';
-import {Decoration, WidgetType} from "@codemirror/view";
+import Color from "color";
+import { Decoration, WidgetType } from "@codemirror/view";
 
 export default class ColorWidget extends WidgetType {
-  constructor(color, {value, mode}) {
+  constructor(color, { value, mode }) {
     super();
     this.mode = mode;
     this.color = Color[mode](...color);
     this.value = value;
   }
 
-  static treeEnter (view, type, from, to) {
+  static treeEnter(view, type, from, to) {
     let value = view.state.doc.sliceString(from, to);
     if (
       type.name === "FunctionExpr" &&
-      (
-        value.match(/^(rgb)\((?:(.*),(.*),(.*))?\)/) ||
-        value.match(/^(hsl)\((?:(.*),(.*),(.*))?\)/)
-      )
+      (value.match(/^(rgb)\((?:(.*),(.*),(.*))?\)/) ||
+        value.match(/^(hsl)\((?:(.*),(.*),(.*))?\)/))
     ) {
       const mode = RegExp.$1;
 
       let deco = Decoration.widget({
         widget: new ColorWidget(
-          [
-            parseInt(RegExp.$2),
-            parseInt(RegExp.$3),
-            parseInt(RegExp.$4),
-          ], {
+          [parseInt(RegExp.$2), parseInt(RegExp.$3), parseInt(RegExp.$4)],
+          {
             view,
             value,
             mode,
-          }),
-        side: 1
-      })
+          }
+        ),
+        side: 1,
+      });
       return deco.range(from);
     }
   }
 
-  findSelf (view) {
+  findSelf(view) {
     for (let decoration of view.docView.decorations) {
       let cursor = decoration.iter();
       while (cursor.value) {
         console.log("!!!", cursor, "===", this);
         if (cursor.value && cursor.value.widget === this) {
           console.log("cursor=", cursor);
-          return {from: cursor.from, to: cursor.to, value: cursor.value.widget};
+          return {
+            from: cursor.from,
+            to: cursor.to,
+            value: cursor.value.widget,
+          };
         }
         cursor.next();
       }
@@ -52,7 +52,7 @@ export default class ColorWidget extends WidgetType {
     return false;
   }
 
-  hexToMode (hex) {
+  hexToMode(hex) {
     const obj = Color(hex)[this.mode]().color;
     let out;
     const alpha = Color(hex).alpha();
@@ -63,17 +63,14 @@ export default class ColorWidget extends WidgetType {
       const l = parseInt(obj[2]);
       if (alpha < 1) {
         out = `hsla(${h}, ${s}, ${l}, ${alpha})`;
-      }
-      else {
+      } else {
         out = `hsl(${h}, ${s}, ${l})`;
       }
-    }
-    else {
+    } else {
       const [r, g, b] = obj;
       if (alpha < 1) {
         out = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-      }
-      else {
+      } else {
         out = `rgb(${r}, ${g}, ${b})`;
       }
     }
@@ -83,7 +80,7 @@ export default class ColorWidget extends WidgetType {
     // return this.hexToRgb(hex).replace(/^rgb/, "hsl");
   }
 
-  hexToRgb (hex) {
+  hexToRgb(hex) {
     const matches = hex.match(/^#(..)(..)(..)$/);
     const r = parseInt(matches[1], 16);
     const g = parseInt(matches[2], 16);
@@ -91,15 +88,15 @@ export default class ColorWidget extends WidgetType {
     return `rgb(${r}, ${g}, ${b})`;
   }
 
-  asHex (color) {
+  asHex(color) {
     return color.hex();
     return `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
   }
 
   toDOM(view) {
-    let wrap = document.createElement("span")
-    wrap.setAttribute("aria-hidden", "true")
-    wrap.className = "cm-boolean-toggle"
+    let wrap = document.createElement("span");
+    wrap.setAttribute("aria-hidden", "true");
+    wrap.className = "cm-boolean-toggle";
     const input = document.createElement("input");
     input.setAttribute("type", "color");
 
@@ -112,14 +109,14 @@ export default class ColorWidget extends WidgetType {
       const match = this.findSelf(view);
 
       if (match) {
-        const {from, to} = match;
+        const { from, to } = match;
 
         const changes = {
           from,
-          to: to+this.value.length,
+          to: to + this.value.length,
           insert: this.hexToMode(e.target.value),
         };
-        const update = view.state.update({changes});
+        const update = view.state.update({ changes });
         view.update([update]);
       }
     });
@@ -128,9 +125,9 @@ export default class ColorWidget extends WidgetType {
       input.style.backgroundColor = e.target.value;
     });
 
-    let box = wrap.appendChild(input)
+    let box = wrap.appendChild(input);
     const hex = this.color.hex();
-    console.log("this.color", {hex});
+    console.log("this.color", { hex });
     box.style = `
       display: inline-block;
       background: ${hex};
@@ -145,7 +142,7 @@ export default class ColorWidget extends WidgetType {
     return wrap;
   }
 
-  ignoreEvent (e) {
+  ignoreEvent(e) {
     return false;
   }
 }

@@ -1,6 +1,6 @@
-import stringify from 'json-stringify-pretty-compact';
+import stringify from "json-stringify-pretty-compact";
 
-import '../texprl.css';
+import "../texprl.css";
 import {
   TexprlEditor,
   BooleanWidget,
@@ -10,8 +10,7 @@ import {
   ReferenceWidget,
   toArrayAst,
   fromArrayAst,
-} from '../texprl.js';
-
+} from "../texprl.js";
 
 /**
  * ============================================================================
@@ -29,11 +28,11 @@ const doc = `all(
 )`;
 
 const debugEl = document.querySelector("#debug");
-const sExprEl= document.querySelector("#s-expr");
+const sExprEl = document.querySelector("#s-expr");
 const formattedEl = document.querySelector("#formatted");
 const actionAutoformatButton = document.querySelector("#action-auto-format");
 
-function showDebugInfo (texprl) {
+function showDebugInfo(texprl) {
   const json = toArrayAst(texprl.view, texprl);
   const formatted = fromArrayAst(json, texprl);
   formattedEl.value = formatted;
@@ -51,11 +50,11 @@ const editor = new TexprlEditor(el, doc, {
     reference: true,
   },
   widgets: [
-    {type: "Boolean", widget: BooleanWidget},
-    {type: "Color", widget: ColorWidget},
-    {type: "DateTime", widget: DateTimeWidget},
-    {type: "Date", widget: DateWidget},
-    {type: "Reference", widget: ReferenceWidget},
+    { type: "Boolean", widget: BooleanWidget },
+    { type: "Color", widget: ColorWidget },
+    { type: "DateTime", widget: DateTimeWidget },
+    { type: "Date", widget: DateWidget },
+    { type: "Reference", widget: ReferenceWidget },
   ],
   functions: [
     // {name: "foo"},
@@ -66,12 +65,12 @@ const editor = new TexprlEditor(el, doc, {
     //     "0": "PERSON",
     //   }
     // }
-  ]
+  ],
 });
 
 actionAutoformatButton.addEventListener("click", () => {
   editor.autoFormat();
-})
+});
 
 /**
  * ============================================================================
@@ -87,14 +86,13 @@ editor.setLookup([
       {
         editorId: "jane",
         backendId: "6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b",
-        name: "Jane Austen"
+        name: "Jane Austen",
       },
       {
         editorId: "allen",
         backendId: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-        name: "Allen Ginsberg"
+        name: "Allen Ginsberg",
       },
-    ]
+    ],
   },
 ]);
-

@@ -1,10 +1,9 @@
-import {parser} from "./lang.js";
-import {foldNodeProp, foldInside, indentNodeProp} from "@codemirror/language";
-import {styleTags, tags} from "@codemirror/highlight";
-import {LRLanguage} from "@codemirror/language";
-import {LanguageSupport} from "@codemirror/language";
-import {syntaxTree} from "@codemirror/language"
-
+import { parser } from "./lang.js";
+import { foldNodeProp, foldInside, indentNodeProp } from "@codemirror/language";
+import { styleTags, tags } from "@codemirror/highlight";
+import { LRLanguage } from "@codemirror/language";
+import { LanguageSupport } from "@codemirror/language";
+import { syntaxTree } from "@codemirror/language";
 
 const MATH = ["+", "-", "/", "*"];
 
@@ -12,17 +11,11 @@ function isMath(v) {
   return MATH.includes(v[0]);
 }
 
-function toMath (v, texprl) {
-  return [
-    "(",
-    convertExpr(v[1]),
-    ,v[0],
-    convertExpr(v[2]),
-    ")"
-  ].join("");
+function toMath(v, texprl) {
+  return ["(", convertExpr(v[1]), , v[0], convertExpr(v[2]), ")"].join("");
 }
 
-function convertExpr (v, texprl, sep=", ") {
+function convertExpr(v, texprl, sep = ", ") {
   if (isMath(v)) {
     return toMath(v, texprl);
   }
@@ -31,35 +24,35 @@ function convertExpr (v, texprl, sep=", ") {
     const out = texprl.checkLookupFromBackendId(v[1]);
     if (out) {
       return `#${out.editorId}`;
-    }
-    else {
+    } else {
       return `#invalid`;
     }
-  }
-  else if (Array.isArray(v)) {
+  } else if (Array.isArray(v)) {
     const fnName = v[0];
-    let beginSep = '';
-    let endSep = '';
+    let beginSep = "";
+    let endSep = "";
     if (["all", "any"].includes(fnName)) {
-      beginSep = '\n  ';
-      endSep = '\n';
-      sep = ',\n  ';
+      beginSep = "\n  ";
+      endSep = "\n";
+      sep = ",\n  ";
     }
-    const args = v.slice(1).map(iv => convertExpr(iv, texprl)).join(sep);
+    const args = v
+      .slice(1)
+      .map((iv) => convertExpr(iv, texprl))
+      .join(sep);
     return `${v[0]}(${beginSep}${args}${endSep})`;
-  }
-  else {
+  } else {
     return JSON.stringify(v);
   }
 }
 
 export function fromArrayAst(arr, texprl) {
-  const foo =  arr.map((item) => convertExpr(item, texprl)).join("\n");
+  const foo = arr.map((item) => convertExpr(item, texprl)).join("\n");
   console.log("FOO", foo);
   return foo;
 }
 
-function toObj (view, node, texprl) {
+function toObj(view, node, texprl) {
   if (node.type.name === "Number") {
     let value = view.state.doc.sliceString(node.from, node.to);
     return Number(value);
@@ -83,11 +76,11 @@ function toObj (view, node, texprl) {
     return ["array"];
   }
   const MathSymbols = {
-    "Div": "/",
-    "Plus": "+",
-    "Times": "*",
-    "Minus": "-",
-  }
+    Div: "/",
+    Plus: "+",
+    Times: "*",
+    Minus: "-",
+  };
   if (Object.keys(MathSymbols).includes(node.type.name)) {
     return [MathSymbols[node.type.name]];
   }
@@ -95,7 +88,9 @@ function toObj (view, node, texprl) {
     return [];
   }
   if (node.type.name === "FunctionExpr") {
-    let value = view.state.doc.sliceString(node.from, node.to).replace(/[(][\s\S]+$/m, "");
+    let value = view.state.doc
+      .sliceString(node.from, node.to)
+      .replace(/[(][\s\S]+$/m, "");
     return [value];
   }
   if (node.type.name === "⚠") {
@@ -104,13 +99,13 @@ function toObj (view, node, texprl) {
   return [node.type.name];
 }
 
-function collapseBinaryExpr (node) {
+function collapseBinaryExpr(node) {
   const nodeIsArray = Array.isArray(node);
   if (nodeIsArray && node[0] === "BinaryExpression") {
     return [
       node[2][0],
       collapseBinaryExpr(node[1]),
-      collapseBinaryExpr(node[3])
+      collapseBinaryExpr(node[3]),
     ];
   }
   if (nodeIsArray) {
@@ -119,7 +114,7 @@ function collapseBinaryExpr (node) {
   return node;
 }
 
-export function toArrayAst (view, texprl) {
+export function toArrayAst(view, texprl) {
   const map = new Map();
   let top;
   const tree = syntaxTree(view.state);
@@ -137,7 +132,7 @@ export function toArrayAst (view, texprl) {
       parentObj.push(obj);
     }
     map.set(node, obj);
-  } while (cursor.next())
+  } while (cursor.next());
 
   top = collapseBinaryExpr(top);
   return top;
@@ -147,24 +142,24 @@ export const exampleLanguage = LRLanguage.define({
   parser: parser.configure({
     props: [
       styleTags({
-        "Name": tags.variableName,
-        "Number": tags.number,
-        "Bool": tags.bool,
-        "String": tags.string,
+        Name: tags.variableName,
+        Number: tags.number,
+        Bool: tags.bool,
+        String: tags.string,
         ",": tags.separator,
         "[ ]": tags.squareBracket,
         "{ }": tags.brace,
-        "FnName": tags.number,
-        "List": tags.list,
-        "Lookup": tags.atom,
+        FnName: tags.number,
+        List: tags.list,
+        Lookup: tags.atom,
       }),
-    ]
+    ],
   }),
   languageData: {
-    closeBrackets: {brackets: ["(", "[", '"']},
+    closeBrackets: { brackets: ["(", "[", '"'] },
     indentOnInput: /^\s*[\}\]]$/,
   },
-})
+});
 
 const pseudoClasses = [
   "and",
@@ -183,23 +178,24 @@ const pseudoClasses = [
   // ---- additional ----
   "rgb",
   "zoom",
-].map(name => ({type: "class", label: name}))
+].map((name) => ({ type: "class", label: name }));
 
 const span = /^[\w-]*/;
 
 const cssCompletionSource = (lookupCallback) => {
-  return context => {
+  return (context) => {
     const lookup = lookupCallback();
-    let {state, pos} = context, node = syntaxTree(state).resolveInner(pos, -1);
+    let { state, pos } = context,
+      node = syntaxTree(state).resolveInner(pos, -1);
 
     console.log("node=", node, pos);
     if (node.type.name === "Lookup") {
       console.log("node=HERE");
       return {
-        from: node.from+1,
-        options: lookup.map(({editorId, name}) => {
+        from: node.from + 1,
+        options: lookup.map(({ editorId, name }) => {
           const label = `${editorId}`;
-          console.log("node=", {label});
+          console.log("node=", { label });
           return {
             type: "class",
             label: label,
@@ -207,19 +203,17 @@ const cssCompletionSource = (lookupCallback) => {
           };
         }),
         filter: false,
-        span
+        span,
       };
-    }
-    else if (node.type.name === "FunctionExpr") {
-      return {from: node.from, options: pseudoClasses, span};
-    }
-    else if (node.parent.type.name === "FunctionExpr") {
+    } else if (node.type.name === "FunctionExpr") {
+      return { from: node.from, options: pseudoClasses, span };
+    } else if (node.parent.type.name === "FunctionExpr") {
       let parentValue = state.doc.sliceString(node.parent.from, node.parent.to);
-      console.log("node=value=", {parentValue});
+      console.log("node=value=", { parentValue });
       if (parentValue.match(/^device/)) {
         console.log("node=found");
         return {
-          from: node.from+1,
+          from: node.from + 1,
           options: [
             {
               type: "class",
@@ -243,21 +237,18 @@ const cssCompletionSource = (lookupCallback) => {
             },
           ],
           filter: false,
-          span
+          span,
         };
       }
     }
 
     return null;
   };
-}
+};
 
-export function wast (lookupCallback) {
+export function wast(lookupCallback) {
   const completion = exampleLanguage.data.of({
-    autocomplete: cssCompletionSource(lookupCallback)
+    autocomplete: cssCompletionSource(lookupCallback),
   });
-  return new LanguageSupport(
-    exampleLanguage,
-    [completion]
-  );
+  return new LanguageSupport(exampleLanguage, [completion]);
 }

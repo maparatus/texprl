@@ -1,5 +1,5 @@
 export default {
-  root: './../',
+  root: "./../",
   devOptions: {
     port: 8000,
   },

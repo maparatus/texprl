@@ -1,23 +1,23 @@
-import {Decoration, WidgetType} from "@codemirror/view";
+import { Decoration, WidgetType } from "@codemirror/view";
 
 export default class ReferenceWidget extends WidgetType {
-  constructor(id, {parent}) {
+  constructor(id, { parent }) {
     super();
     this.parent = parent;
     this.id = id;
   }
 
-  static treeEnter (view, type, from, to, parent) {
+  static treeEnter(view, type, from, to, parent) {
     let value = view.state.doc.sliceString(from, to);
 
     if (type.name === "Lookup" && value.match(/^(#([^"]*))$/)) {
-      const widget = new ReferenceWidget(RegExp.$2, {parent});
+      const widget = new ReferenceWidget(RegExp.$2, { parent });
 
       let deco = Decoration.widget({
         widget: widget,
         side: 1,
-      })
-      return deco.range(from+value.length);
+      });
+      return deco.range(from + value.length);
     }
   }
 
@@ -36,10 +36,9 @@ export default class ReferenceWidget extends WidgetType {
     const lookupValue = this.parent.checkLookup(this.id);
     if (lookupValue) {
       wrap.innerText = lookupValue.name;
-    }
-    else {
-      wrap.setAttribute('aria-labal', 'invalid');
-      wrap.innerText = '???';
+    } else {
+      wrap.setAttribute("aria-labal", "invalid");
+      wrap.innerText = "???";
     }
     return wrap;
   }

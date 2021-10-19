@@ -1,33 +1,33 @@
-import {Decoration, WidgetType} from "@codemirror/view";
+import { Decoration, WidgetType } from "@codemirror/view";
 
 export default class BooleanWidget extends WidgetType {
-  constructor(checked, {value}) {
+  constructor(checked, { value }) {
     super();
     this.value = value;
     this.checked = checked;
   }
 
-  static treeEnter (view, type, from, to) {
+  static treeEnter(view, type, from, to) {
     if (type.name == "Bool") {
       let value = view.state.doc.sliceString(from, to);
       let isTrue = value == "true";
 
       let deco = Decoration.widget({
-        widget: new BooleanWidget(isTrue, {value}),
-        side: 1
-      })
+        widget: new BooleanWidget(isTrue, { value }),
+        side: 1,
+      });
       return deco.range(from);
     }
   }
 
   eq(other) {
-    return other.checked == this.checked
+    return other.checked == this.checked;
   }
 
   toDOM(view) {
-    let wrap = document.createElement("span")
-    wrap.setAttribute("aria-hidden", "true")
-    wrap.className = "cm-boolean-toggle"
+    let wrap = document.createElement("span");
+    wrap.setAttribute("aria-hidden", "true");
+    wrap.className = "cm-boolean-toggle";
     const input = document.createElement("input");
     input.style = `
       margin: 0;
@@ -47,12 +47,12 @@ export default class BooleanWidget extends WidgetType {
         to: pos + this.value.length,
         insert: el.checked ? "true" : "false",
       };
-      view.dispatch({changes: change});
-    })
-    return wrap
+      view.dispatch({ changes: change });
+    });
+    return wrap;
   }
 
-  ignoreEvent (e) {
+  ignoreEvent(e) {
     return false;
   }
 }
