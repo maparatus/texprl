@@ -1,30 +1,52 @@
-@precedence { Lookup, Number, Bool, FunctionName, div @left, times @left, plus @left, minus @left }
-
-commaSep<content> { "" | content ("," content)* (",")* }
-
-@top Program { FunctionExpr }
-
-@skip { whitespace }
-
-FunctionExpr {
-  functionName "(" commaSep<fexpression> ")"
+maybespaces<content> {
+ space* content space* 
 }
 
-List { "[" commaSep<expression> "]" }
+commaSep<content> {
+  "" | content ("," content)* (",")*
+}
 
-expression { Lookup | Bool | String | Number | binaryExpressionWrap | FunctionExpr }
+@top Program { maybespaces<FunctionExpr> }
 
-fexpression { Lookup | Bool | String | Number | binaryExpressionWrap | FunctionExpr | List }
+@precedence {
+  Lookup,
+  Number,
+  Bool,
+  FunctionName,
+  braces,
+  div @left,
+  times @left,
+  plus @left,
+  minus @left
+}
 
-binaryExpressionWrap {
-  "(" BinaryExpression ")" | BinaryExpression
+FunctionExpr {
+  functionName "(" commaSep<maybespaces<expression>> ")"
+}
+
+List { "[" commaSep<maybespaces<expression>> "]" }
+
+expression {
+  braces |
+  Lookup |
+  Bool |
+  String |
+  Number |
+  BinaryExpression |
+  FunctionExpr |
+  List
+}
+
+braces {
+  "(" BinaryExpression ")" |
+  "(" Number ")"
 }
 
 BinaryExpression {
-  expression !times Times expression |
-  expression !div Div expression |
-  expression !plus Plus expression |
-  expression !minus Minus expression
+  expression space* !times Times space* expression |
+  expression space* !div   Div   space* expression |
+  expression space* !plus  Plus  space* expression |
+  expression space* !minus Minus space* expression
 }
 
 @tokens {
@@ -38,7 +60,7 @@ BinaryExpression {
   Times { "*" }
   Minus { "-" }
   String { '"' (!["\\] | "\\" _)* '"' }
-  whitespace { $[ \n\r\t] }
+  space { std.whitespace+ }
   Lookup { "#" ($[a-z_0-9]+)* }
 
   @precedence { Lookup, Number, Bool, functionName }
