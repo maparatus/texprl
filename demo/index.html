@@ -139,8 +139,18 @@ editor.setLookup([
         <p>
           The texprl code editor —
           <button id="action-auto-format">Auto format</button>
+          <label>
+            <input type="checkbox" id="action-use-runtime"/>use runtime
+            — supports <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>pow</code> and <code>at</code>
+          </label>
         </p>
-        <div id="editor"></div>
+        <div>
+          <div id="editor"></div>
+          <div id="expr-result-container" style="display: none;">
+            <label>result=<input disabled id="expr-result" /></label>
+            <span id="expr-error"></span>
+          </div>
+        </div>
         <p>The JSON representation</p>
         <textarea
           id="s-expr"

@@ -27,15 +27,69 @@ const doc = `all(
   equals(length(["one",2,false]), 3),
 )`;
 
+const useRuntimeEl = document.querySelector("#action-use-runtime");
 const debugEl = document.querySelector("#debug");
 const sExprEl = document.querySelector("#s-expr");
 const formattedEl = document.querySelector("#formatted");
 const actionAutoformatButton = document.querySelector("#action-auto-format");
 
+let useRuntime = false;
+useRuntimeEl.addEventListener("change", (e) => {
+  const {checked} = e.target;
+  exprContainerEl.style.display = (checked ? 'block' : 'none');
+  useRuntime = checked;
+});
+
+const fn = {
+  "math": (v) => v,
+  "pow": (a, b) => Math.pow(a,b),
+  "at": (i, v) => v.at(i),
+  "+": (a, b) => a+b,
+  "-": (a, b) => a-b,
+  "*": (a, b) => a*b,
+  "/": (a, b) => a/b,
+  "array": (...v) => v,
+}
+
+function callFunction (arr) {
+  if (Array.isArray(arr)) {
+    const [op] = arr;
+    const args = arr.slice(1);
+
+    if (fn[op]) {
+      const argsToPass = args.map(callFunction);
+      return fn[op].apply(undefined, argsToPass);
+    }
+    else {
+      throw new Error(`No such function: ${op}`);
+    }
+  }
+  else {
+    return arr;
+  }
+}
+
+const exprContainerEl = document.querySelector("#expr-result-container");
+const exprResultEl = document.querySelector("#expr-result");
+const exprErrorEl = document.querySelector("#expr-error");
+
 function showDebugInfo(texprl) {
   const json = toArrayAst(texprl.view, texprl);
-  const formatted = fromArrayAst(json, texprl);
-  formattedEl.value = formatted;
+  // const formatted = fromArrayAst(json, texprl);
+  // formattedEl.value = formatted;
+
+  if (useRuntime) {
+    try {
+      const result = callFunction(json[0]);
+      console.log("result=", result);
+      exprResultEl.value = JSON.stringify(result);
+      exprErrorEl.innerText = "";
+    } catch (err) {
+      console.log("failed=", err);
+      exprResultEl.value = "";
+      exprErrorEl.innerText = err;
+    }
+  }
 
   debugEl.value = texprl.view.state.doc.text.join("\n");
   sExprEl.value = stringify(json);
