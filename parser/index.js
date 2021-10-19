@@ -79,7 +79,7 @@ function toObj(view, node, texprl) {
   }
   if (node.type.name === "Bool") {
     let value = view.state.doc.sliceString(node.from, node.to);
-    return Boolean(value);
+    return value === "true" ? true : false;
   }
   if (node.type.name === "Lookup") {
     let value = view.state.doc.sliceString(node.from, node.to);
