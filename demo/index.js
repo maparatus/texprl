@@ -64,6 +64,7 @@ function showDebugInfo(texprl) {
       console.log("failed=", err);
       exprResultEl.value = "";
       exprErrorEl.innerText = err;
+      texprl.setRuntimeErrors([err]);
     }
   }
 

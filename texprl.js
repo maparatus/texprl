@@ -1,4 +1,4 @@
-import { EditorState, SelectionRange, Compartment } from "@codemirror/state";
+import { StateEffect, StateField, EditorState, SelectionRange, Compartment } from "@codemirror/state";
 import { keymap, Decoration } from "@codemirror/view";
 import { basicSetup, EditorView } from "@codemirror/basic-setup";
 import { defaultKeymap } from "@codemirror/commands";
@@ -10,7 +10,7 @@ import {
   ViewPlugin,
 } from "@codemirror/view";
 import { syntaxTree } from "@codemirror/language";
-import { wast, fromArrayAst, toArrayAst } from "./parser/index.js";
+import { parser, wast, fromArrayAst, toArrayAst } from "./parser/index.js";
 import { h, render } from "preact";
 import { v4 as uuidv4 } from "uuid";
 import Color from "color";
@@ -33,15 +33,56 @@ export {
 
 export { toArrayAst, fromArrayAst };
 
+export class RuntimeError extends Error {
+  constructor (message, opts={}) {
+    super(message);
+    this.path = opts.path;
+  }
+}
+
 const nullFunction = () => {};
+
+const addUnderline = StateEffect.define();
+const underlineMark = Decoration.mark({class: "cm-underline"})
+
+const underlineField = StateField.define({
+  create() {
+    return Decoration.none
+  },
+  update(underlines, tr) {
+    underlines = underlines.map(tr.changes)
+    for (let e of tr.effects) if (e.is(addUnderline)) {
+      underlines = underlines.update({
+        add: [underlineMark.range(e.value.from, e.value.to)]
+      })
+    }
+    return underlines
+  },
+  provide: f => EditorView.decorations.from(f)
+})
+
+const underlineTheme = EditorView.baseTheme({
+  ".cm-underline": { textDecoration: "underline 3px red" }
+})
 
 function addWidgets(view, texprl) {
   let widgets = [];
+  let effects = [];
+  console.log("==================================================");
+
   for (let { from, to } of view.visibleRanges) {
     syntaxTree(view.state).iterate({
       from,
       to,
       enter: (type, from, to) => {
+
+        if (type.name === "⚠") {
+          effects.push(addUnderline.of({
+            from: from === to ? from -1 : from,
+            to: to,
+          }));
+        }
+
         [
           BooleanWidget,
           ColorWidget,
@@ -57,6 +98,13 @@ function addWidgets(view, texprl) {
       },
     });
   }
+
+  effects.push(StateEffect.appendConfig.of([underlineField, underlineTheme]));
+  // HACK
+  setTimeout(() => {
+    view.dispatch({effects});
+  }, 0)
+
   return Decoration.set(widgets);
 }
 
@@ -107,9 +155,24 @@ export class TexprlEditor {
     this._setupCodemirror(initialDoc);
   }
 
+  setRuntimeErrors (errors) {
+    console.log("TODO: setRuntimeErrors", errors);
+    // TODO: Map the error back into the code structure.
+  }
+
   _onDispatch = (transaction) => {
     this.view.update([transaction]);
     this.onDispatch(this);
+
+    const parseTree = parser.parse(this.view.state.doc.text.join("\n"));
+    parseTree.iterate({
+      enter: (type, from, to, get) => {
+        if (type.isError) {
+          console.log("???????", type, from, to, get());
+        }
+      }
+    });
+    console.log("??????", parseTree);
   };
 
   autoFormat = () => {
