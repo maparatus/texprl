@@ -6,13 +6,12 @@ commaSep<content> {
   "" | content ("," content)* ("," space*)*
 }
 
-@top Program { maybespaces<FunctionExpr> }
+@top Program { expression }
 
 @precedence {
   Lookup,
   Number,
   Bool,
-  FunctionName,
   braces,
   div @left,
   times @left,
