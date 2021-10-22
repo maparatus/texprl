@@ -13,10 +13,8 @@ commaSep<content> {
   Number,
   Bool,
   braces,
-  div @left,
-  times @left,
-  plus @left,
-  minus @left
+  divtimes @left,
+  plusminus @left
 }
 
 FunctionExpr {
@@ -42,17 +40,15 @@ braces {
 }
 
 BinaryExpression {
-  expression space* !times Times space* expression |
-  expression space* !div   Div   space* expression |
-  expression space* !plus  Plus  space* expression |
-  expression space* !minus Minus space* expression
+  expression space* !divtimes  (Div | Times)  space* expression |
+  expression space* !plusminus (Plus | Minus) space* expression
 }
 
 @tokens {
   Bool { "true" | "false" }
   functionName { $[a-z_]+ ($[a-z_0-9]+)* }
-  Integer { std.digit+ }
-  Float { std.digit+ "." std.digit+ }
+  Integer { ($[-])* std.digit+ }
+  Float { ($[-])* std.digit+ "." std.digit+ }
   Number { Integer | Float }
   Div { "/" }
   Plus { "+" }

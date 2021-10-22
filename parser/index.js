@@ -31,13 +31,32 @@ function isMath(v) {
   return MATH.includes(v[0]);
 }
 
-function toMath(v, texprl) {
-  return ["(", convertExpr(v[1]), , v[0], convertExpr(v[2]), ")"].join("");
+function getPrecedence (node) {
+  if (!node) return -1;
+  if (node[0] === "+" || node[0] === "-") return 0;
+  if (node[0] === "*" || node[0] === "/") return 1;
 }
 
-function convertExpr(v, texprl, sep = ", ") {
+// TODO: Make math better...
+function toMath(v, texprl, parent) {
+  const parentPrecedence = getPrecedence(parent);
+  const currentPrecedence = getPrecedence(v);
+  const out = [
+    convertExpr(v[1], texprl, v), 
+    v[0],
+    convertExpr(v[2], texprl, v)
+  ].join("");
+
+  if (parentPrecedence > currentPrecedence) {
+    return `(${out})`;
+  }
+  return out;
+}
+
+function convertExpr(v, texprl, parent) {
+  let sep = ", ";
   if (isMath(v)) {
-    return toMath(v, texprl);
+    return toMath(v, texprl, parent);
   }
   // TODO: FIXME
   else if (Array.isArray(v) && v[0] === "read") {
@@ -58,7 +77,7 @@ function convertExpr(v, texprl, sep = ", ") {
     }
     const args = v
       .slice(1)
-      .map((iv) => convertExpr(iv, texprl))
+      .map((iv) => convertExpr(iv, texprl, v))
       .join(sep);
     return `${v[0]}(${beginSep}${args}${endSep})`;
   } else {
@@ -67,29 +86,29 @@ function convertExpr(v, texprl, sep = ", ") {
 }
 
 export function fromArrayAst(arr, texprl) {
-  const foo = arr.map((item) => convertExpr(item, texprl)).join("\n");
+  const foo = arr.map((item) => convertExpr(item, texprl, null)).join("\n");
   console.log("FOO", foo);
   return foo;
 }
 
-function toObj(view, node, texprl) {
+function toObj(state, node, texprl) {
   if (node.type.name === "Number") {
-    let value = view.state.doc.sliceString(node.from, node.to);
+    let value = state.doc.sliceString(node.from, node.to);
     return Number(value);
   }
   if (node.type.name === "Bool") {
-    let value = view.state.doc.sliceString(node.from, node.to);
+    let value = state.doc.sliceString(node.from, node.to);
     return value === "true" ? true : false;
   }
   if (node.type.name === "Lookup") {
-    let value = view.state.doc.sliceString(node.from, node.to);
+    let value = state.doc.sliceString(node.from, node.to);
     const found = texprl.checkLookup(value.replace(/^#/, ""));
     if (found) {
       return found.backendId;
     }
   }
   if (node.type.name === "String") {
-    let value = view.state.doc.sliceString(node.from, node.to);
+    let value = state.doc.sliceString(node.from, node.to);
     return value.replace(/^"|"$/g, "");
   }
   if (node.type.name === "List") {
@@ -108,7 +127,7 @@ function toObj(view, node, texprl) {
     return [];
   }
   if (node.type.name === "FunctionExpr") {
-    let value = view.state.doc
+    let value = state.doc
       .sliceString(node.from, node.to)
       .replace(/[(][\s\S]+$/m, "");
     return [value];
@@ -120,41 +139,52 @@ function toObj(view, node, texprl) {
 }
 
 function collapseBinaryExpr(node) {
-  const nodeIsArray = Array.isArray(node);
-  if (nodeIsArray && node[0] === "BinaryExpression") {
-    return [
-      node[2][0],
-      collapseBinaryExpr(node[1]),
-      collapseBinaryExpr(node[3]),
-    ];
+  const nodeIsArray = Array.isArray(node.value);
+  if (nodeIsArray && node.value[0] === "BinaryExpression") {
+    const children = [];
+    if (node.children[0]) children.push(collapseBinaryExpr(node.children[0]));
+    if (node.children[2]) children.push(collapseBinaryExpr(node.children[2]));
+    return {
+      ...node.children[1],
+      children: children,
+    };
   }
-  if (nodeIsArray) {
-    return node.map(collapseBinaryExpr);
+  else {
+    return {
+      ...node,
+      children: node.children.map(collapseBinaryExpr),
+    };
   }
-  return node;
 }
 
-export function toArrayAst(view, texprl) {
+export function toArrayAst(state, texprl) {
   const map = new Map();
   let top;
-  const tree = syntaxTree(view.state);
+  const tree = syntaxTree(state);
 
   const cursor = tree.cursor();
   do {
     const node = cursor.node;
-    const obj = toObj(view, node, texprl);
+    const obj = {
+      from: node.from,
+      to: node.to,
+      value: toObj(state, node, texprl),
+      children: [],
+    };
     if (!top) {
       top = obj;
     }
 
     const parentObj = map.get(node.parent);
     if (parentObj) {
-      parentObj.push(obj);
+      parentObj.children.push(obj);
     }
     map.set(node, obj);
   } while (cursor.next());
 
+  console.log("pre:top=", top);
   top = collapseBinaryExpr(top);
+  console.log("top=", top);
   return top;
 }
 
@@ -212,7 +242,7 @@ const cssCompletionSource = (lookupCallback) => {
       };
     } else if (node.type.name === "FunctionExpr") {
       return { from: node.from, options: pseudoClasses, span };
-    } else if (node.parent.type.name === "FunctionExpr") {
+    } else if (node.parent && node.parent.type.name === "FunctionExpr") {
       let parentValue = state.doc.sliceString(node.parent.from, node.parent.to);
       console.log("node=value=", { parentValue });
       if (parentValue.match(/^device/)) {

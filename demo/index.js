@@ -18,15 +18,16 @@ import {
  * A simple abstract example showing off the features of the editor
  * ============================================================================
  */
-const doc = `all(
-  equals(rgb(255, 0, 0), hsl(0, 100, 50)),
-  not_equals(1, 1.22),
-  equals("hello", to_lower("HELLO")),
-  not_equals(true, false),
-  equals(read(#foobar), "testing"),
-  not_equals("2020-10-01", "2020-10-01T12:30"),
-  equals(length(["one",2,false]), 3),
-)`;
+// const doc = `all(
+//   equals(rgb(255, 0, 0), hsl(0, 100, 50)),
+//   not_equals(1, 1.22),
+//   equals("hello", to_lower("HELLO")),
+//   not_equals(true, false),
+//   equals(read(#foobar), "testing"),
+//   not_equals("2020-10-01", "2020-10-01T12:30"),
+//   equals(length(["one",2,false]), 3),
+// )`;
+const doc = "1-1-1+9+pow(2, 2)";
 
 const useRuntimeEl = document.querySelector("#action-use-runtime");
 const debugEl = document.querySelector("#debug");
@@ -45,8 +46,20 @@ const exprContainerEl = document.querySelector("#expr-result-container");
 const exprResultEl = document.querySelector("#expr-result");
 const exprErrorEl = document.querySelector("#expr-error");
 
+function toJson (obj) {
+  if (Array.isArray(obj.value)) {
+    return obj.value.concat(obj.children.map(toJson))
+  }
+  else {
+    return obj.value;
+  }
+}
+
 function showDebugInfo(texprl) {
-  const json = toArrayAst(texprl.view, texprl);
+  const ast = toArrayAst(texprl.view.state, texprl);
+  console.log(":::: ast=", ast);
+
+  const json = toJson(ast);
   try {
     const formatted = fromArrayAst(json, texprl);
     formattedEl.value = formatted;
@@ -56,24 +69,32 @@ function showDebugInfo(texprl) {
 
   if (useRuntime) {
     try {
+      console.log("running", json[0])
       const result = runtime(json[0]);
       console.log("result=", result);
-      exprResultEl.value = JSON.stringify(result);
-      exprErrorEl.innerText = "";
+
+      if (result.errors.length > 0) {
+        exprResultEl.value = "";
+        exprErrorEl.innerHTML = result.errors.map(err => err.message).join("<br>");
+      }
+      else {
+        exprResultEl.value = JSON.stringify(result.output);
+        exprErrorEl.innerText = "";
+      }
     } catch (err) {
       console.log("failed=", err);
       exprResultEl.value = "";
       exprErrorEl.innerText = err;
-      texprl.setRuntimeErrors([err]);
     }
   }
 
   debugEl.value = texprl.view.state.doc.text.join("\n");
-  sExprEl.value = stringify(json);
+  sExprEl.value = stringify(ast);
 }
 
 const el = document.querySelector("#editor");
 const editor = new TexprlEditor(el, doc, {
+  runtime: runtime,
   onDispatch: showDebugInfo,
   features: {
     // You can disable reference types in the language, which will cause a

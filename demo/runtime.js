@@ -30,24 +30,34 @@ const operators = {
   "none": (...v) => !v.find(Boolean),
 }
 
-export default function call (arr, path=[]) {
+function _call (arr, errors, path=[0]) {
   if (Array.isArray(arr)) {
     const [op] = arr;
     const args = arr.slice(1);
 
     if (operators[op]) {
-      const argsToPass = args.map((i, index) => call(i, path.concat(index)));
+      const argsToPass = args.map((i, index) => _call(i, errors, path.concat(index)));
       return operators[op].apply(undefined, argsToPass);
     }
     else {
       // TODO: This should throw errors with positional info.
-      throw new RuntimeError(`No such function: ${op}`, {
-        path,
-      });
+      errors.push(
+        new RuntimeError(`No such function: ${op}`, {
+          path,
+        })
+      );
     }
   }
   else {
     return arr;
   }
+}
+
+export default function call (arr) {
+  const errors = [];
+  return {
+    output: _call(arr, errors),
+    errors,
+  };
 }
 
