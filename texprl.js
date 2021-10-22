@@ -22,6 +22,7 @@ import {
   DateWidget,
   ReferenceWidget,
 } from "./widgets";
+import runtimeMarks from './marks/runtime.js';
 
 export {
   BooleanWidget,
@@ -42,34 +43,6 @@ export class RuntimeError extends Error {
 
 const nullFunction = () => {};
 
-const addUnderline = StateEffect.define();
-const underlineMark = Decoration.mark({class: "cm-underline"})
-
-const underlineField = StateField.define({
-  create() {
-    return Decoration.none
-  },
-  update(underlines, tr) {
-    underlines = underlines.map(tr.changes)
-
-    for (let e of tr.effects) if (e.is(addUnderline)) {
-      underlines = underlines.update({
-        add: [underlineMark.range(e.value.from, e.value.to)],
-        // filter: (from, to, value) => {
-        //   return false;
-        // }
-      })
-    }
-    return underlines
-  },
-  provide: f => EditorView.decorations.from(f)
-})
-
-const underlineTheme = EditorView.baseTheme({
-  ".cm-underline": {
-    "border-bottom": "1px dotted #ff0000",
-  }
-})
 
 function addWidgets(view, texprl) {
   let widgets = [];
@@ -132,89 +105,6 @@ const widgetsPlugin = (texprl) => {
   );
 };
 
-function walk (arr, path) {
-  let out = arr;
-  let idx = 0;
-  let len = path.length;
-  while (idx < len) {
-    out = out.children[path[idx]];
-    idx++;
-  }
-  return out;
-}
-
-// Effects can be attached to transactions to communicate with the extension
-const addMarks = StateEffect.define(), filterMarks = StateEffect.define()
-
-function toJson (obj) {
-  if (Array.isArray(obj.value)) {
-    return obj.value.concat(obj.children.map(toJson))
-  }
-  else {
-    return obj.value;
-  }
-}
-
-// This value must be added to the set of extensions to enable this
-const markField = (texprl) => {
-  return StateField.define({
-    // Start with an empty set of decorations
-    create() { return Decoration.none },
-    // This is called whenever the editor updates—it computes the new set
-    update(value, tr) {
-      console.log("markField:update", value, tr, tr.state);
-
-      const ast = toArrayAst(tr.state, texprl);
-      const json = toJson(ast);
-      const result = texprl.runtime(json[0]);
-
-      // Move the decorations to account for document changes
-      value = value.map(tr.changes);
-
-      const ev = [
-        addMarks.of([strikeMark.range(1, 4)]),
-        addMarks.of([strikeMark.range(10, 14)]),
-      ];
-
-      console.log("markField:ev", ev);
-      value = value.update({
-        filter: () => false,
-      });
-
-      result.errors.forEach(error => {
-        const node = walk(ast, error.path);
-        const {from, to} = node;
-        console.log("markField:e=", error, node)
-
-        const mark = addMarks.of([
-          strikeMark.range(
-            from < to ? from : from-1,
-            to
-          ),
-        ]);
-        value = value.update({
-          add: mark.value,
-        });
-      });
-
-      // If this transaction adds or removes decorations, apply those changes
-      // for (let effect of tr.effects) {
-      //   if (effect.is(addMarks)) value = value.update({add: effect.value, sort: true})
-      //   else if (effect.is(filterMarks)) value = value.update({filter: effect.value})
-      // }
-      return value
-    },
-    // Indicate that this field provides a set of decorations
-    provide: f => EditorView.decorations.from(f)
-  })
-};
-
-const strikeMark = Decoration.mark({
-  attributes: {
-    style: "border-bottom: dotted 2px red;"
-  }
-})
-
 export class TexprlEditor {
   constructor(container, initialDoc, opts = {}) {
     this.container = container;
@@ -229,38 +119,6 @@ export class TexprlEditor {
     this.runtime = opts.runtime;
 
     this._setupCodemirror(initialDoc);
-  }
-
-  setRuntimeErrors (errors) {
-    const ast = toArrayAst(this.view, this);
-
-    console.log("TODO: setRuntimeErrors", errors, ast, this.view);
-    return;
-
-    let effects = [];
-    effects.push(addUnderline.of({
-      from: 0,
-      to: 2,
-    }));
-
-    errors.forEach(error => {
-      const node = walk(ast, error.path);
-      console.log("TODO: node", node);
-      if (node.to < ast.to-1 && node.from < node.to) {
-        effects.push(addUnderline.of({
-          from: node.from,
-          to: node.to,
-        }));
-      }
-      else {
-        console.log("!!!!! skipping");
-      }
-    });
-
-    console.log("???? effects", effects);
-    effects.push(StateEffect.appendConfig.of([underlineField, underlineTheme]));
-    this._runtimeEffects = effects;
-    // this.view.dispatch({effects});
   }
 
   _onDispatch = (transaction) => {
@@ -342,7 +200,7 @@ export class TexprlEditor {
           // this.setRuntimeErrors([]);
           console.log("updateListener", update);
         }),
-        markField(this),
+        runtimeMarks(this),
       ],
     });
 
@@ -351,10 +209,6 @@ export class TexprlEditor {
       parent: this.element,
       dispatch: this._onDispatch,
     });
-
-    // this.view.dispatch({
-    //   effects: addMarks.of([strikeMark.range(1, 4)])
-    // });
 
     this.onDispatch(this);
   }
