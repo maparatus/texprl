@@ -6,7 +6,7 @@ commaSep<content> {
   "" | content ("," content)* ("," space*)*
 }
 
-@top Program { expression }
+@top Program { space* expression space* }
 
 @precedence {
   Lookup,
