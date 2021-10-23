@@ -7,6 +7,7 @@
     "dev": "npm run build:grammer && snowpack --config config/snowpack.config.mjs dev",
     "lint": "npx prettier .",
     "test": "mocha test/index.js",
+    "lint": "npx prettier .",
     "lint:fix": "npx prettier --write .",
     "build": "npm run build:grammar && npm run build:snowpack",
     "build:snowpack": "snowpack --config config/snowpack.config.mjs build",
