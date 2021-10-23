@@ -73,5 +73,5 @@ BinaryExpression {
   space { std.whitespace+ }
   Lookup { "#" ($[a-z_0-9]+)* }
 
-  @precedence { Lookup, Number, Bool, functionName }
+  @precedence { Lookup, Number, Bool }
 }
