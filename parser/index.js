@@ -216,7 +216,7 @@ const pseudoClasses = [
 
 const span = /^[\w-]*/;
 
-const cssCompletionSource = (lookupCallback) => {
+const completionSource = (lookupCallback) => {
   return (context) => {
     const lookup = lookupCallback();
     let { state, pos } = context,
@@ -275,9 +275,9 @@ const cssCompletionSource = (lookupCallback) => {
   };
 };
 
-export function wast(lookupCallback) {
+export function plugin(lookupCallback) {
   const completion = exampleLanguage.data.of({
-    autocomplete: cssCompletionSource(lookupCallback),
+    autocomplete: completionSource(lookupCallback),
   });
   return new LanguageSupport(exampleLanguage, [completion]);
 }

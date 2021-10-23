@@ -16,7 +16,7 @@ import {
   ViewPlugin,
 } from "@codemirror/view";
 import { syntaxTree } from "@codemirror/language";
-import { parser, wast, fromArrayAst, toArrayAst } from "./parser/index.js";
+import { parser, plugin, fromArrayAst, toArrayAst } from "./parser/index.js";
 import { h, render } from "preact";
 import { v4 as uuidv4 } from "uuid";
 import Color from "color";
@@ -177,7 +177,7 @@ export class TexprlEditor {
         widgetsPlugin(this),
         basicSetup,
         language.of(
-          wast(() => {
+          plugin(() => {
             return this.lookup.flatMap((i) => i.values);
           })
         ),
