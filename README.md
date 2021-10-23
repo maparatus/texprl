@@ -1,10 +1,26 @@
 # texprl
 
-**T**iny **expr**ession **l**anguage, is a very small language similar to languages found in speadsheets.
+**T**iny **expr**ession **l**anguage, is a very small language similar to languages found in speadsheets. Designed to create really simple expressions, no loops, function definition or complex control flow. Like spreadsheet formulas it's designed to be easy to learn.
 
-The primary aim is to be a language that can be used across maputnik expressions and the fielda form builder. It is therefore a language without a runtime, it just returns a syntax tree in an array syntax suitable for storing in a file/database. See [maplibre-expressions](https://docs.maptiler.com/gl-style-specification/expressions/) for an example.
+The language doesn't have a runtime but rather generates the _json-expression_ syntax as an output. This is designed to be run by a backend like [maplibre][maplibre-expressions]/[mapbox-gl][mapbox-gl-expressions] or a custom runtime of your choosing.
 
-## Setup
+Rather than storing the textual representation of the code, it is expected you just store the _json-expression_ instead. There are methods to convert between the JSON and text representation.
+
+
+## Install
+Install the library
+
+```
+npm i orangemug/texprl --save
+```
+
+
+## Usage
+...
+
+
+
+## Developer setup
 
 Steps
 
@@ -12,3 +28,7 @@ Steps
 2.  `npm run dev`
 
 Go to <http://localhost:8000/demo/> to see a demo.
+
+
+[mapbox-gl-expressions]: https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/
+[maplibre-expressions]: https://docs.maptiler.com/gl-style-specification/expressions
