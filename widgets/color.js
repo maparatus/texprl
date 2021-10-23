@@ -37,9 +37,7 @@ export default class ColorWidget extends WidgetType {
     for (let decoration of view.docView.decorations) {
       let cursor = decoration.iter();
       while (cursor.value) {
-        console.log("!!!", cursor, "===", this);
         if (cursor.value && cursor.value.widget === this) {
-          console.log("cursor=", cursor);
           return {
             from: cursor.from,
             to: cursor.to,
@@ -75,7 +73,6 @@ export default class ColorWidget extends WidgetType {
       }
     }
 
-    console.log(">>>> this.color out", out);
     return out;
     // return this.hexToRgb(hex).replace(/^rgb/, "hsl");
   }
@@ -127,7 +124,6 @@ export default class ColorWidget extends WidgetType {
 
     let box = wrap.appendChild(input);
     const hex = this.color.hex();
-    console.log("this.color", { hex });
     box.style = `
       display: inline-block;
       background: ${hex};

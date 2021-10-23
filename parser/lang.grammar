@@ -1,52 +1,65 @@
-maybespaces<content> {
- space* content space* 
+@skip {
+  space
 }
 
-commaSep<content> {
-  "" | content ("," content)* ("," space*)*
-}
+commaSep<expr> { commaSep1<expr>? }
+commaSep1<expr> { expr ("," expr?)* }
 
-@top Program { space* expression space* }
+@top Program { expression }
 
 @precedence {
+  binaryExpressionWrap,
+  BinaryExpression,
+  expression,
   Lookup,
   Number,
   Bool,
-  braces,
   divtimes @left,
   plusminus @left
 }
 
 FunctionExpr {
-  functionName "(" commaSep<maybespaces<expression>> ")"
+  functionStart commaSep<expression> functionEnd
 }
 
-List { "[" commaSep<maybespaces<expression>> "]" }
+List { "[" commaSep<expression> "]" }
+
+@skip {} {
+  String { stringStart (stringContent)* stringEnd }
+}
 
 expression {
-  braces |
   Lookup |
   Bool |
   String |
   Number |
+  binaryExpressionWrap |
   BinaryExpression |
   FunctionExpr |
   List
 }
 
-braces {
-  "(" BinaryExpression ")" |
-  "(" Number ")"
+dt {
+  (Div | Times)
+}
+
+pm {
+  (Plus | Minus)
+}
+
+binaryExpressionWrap {
+  "(" BinaryExpression ")"
 }
 
 BinaryExpression {
-  expression space* !divtimes  (Div | Times)  space* expression |
-  expression space* !plusminus (Plus | Minus) space* expression
+  expression !divtimes  dt expression |
+  expression !plusminus pm expression
 }
 
 @tokens {
   Bool { "true" | "false" }
-  functionName { $[a-z_]+ ($[a-z_0-9]+)* }
+  functionStart { $[a-z_]+ ($[a-z_0-9]+)* "(" }
+  functionEnd { ")" }
   Integer { ($[-])* std.digit+ }
   Float { ($[-])* std.digit+ "." std.digit+ }
   Number { Integer | Float }
@@ -54,7 +67,9 @@ BinaryExpression {
   Plus { "+" }
   Times { "*" }
   Minus { "-" }
-  String { '"' (!["\\] | "\\" _)* '"' }
+  stringStart { '"' }
+  stringContent { !["\\\n]* "\n" | !["\\\n]+ }
+  stringEnd { '"' }
   space { std.whitespace+ }
   Lookup { "#" ($[a-z_0-9]+)* }
 

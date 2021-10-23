@@ -87,28 +87,27 @@ function convertExpr(v, texprl, parent) {
 
 export function fromArrayAst(arr, texprl) {
   const foo = arr.map((item) => convertExpr(item, texprl, null)).join("\n");
-  console.log("FOO", foo);
   return foo;
 }
 
-function toObj(state, node, texprl) {
+function toObj(doc, node, texprl) {
   if (node.type.name === "Number") {
-    let value = state.doc.sliceString(node.from, node.to);
+    let value = doc.slice(node.from, node.to);
     return Number(value);
   }
   if (node.type.name === "Bool") {
-    let value = state.doc.sliceString(node.from, node.to);
+    let value = doc.slice(node.from, node.to);
     return value === "true" ? true : false;
   }
   if (node.type.name === "Lookup") {
-    let value = state.doc.sliceString(node.from, node.to);
+    let value = doc.slice(node.from, node.to);
     const found = texprl.checkLookup(value.replace(/^#/, ""));
     if (found) {
       return found.backendId;
     }
   }
   if (node.type.name === "String") {
-    let value = state.doc.sliceString(node.from, node.to);
+    let value = doc.slice(node.from, node.to);
     return value.replace(/^"|"$/g, "");
   }
   if (node.type.name === "List") {
@@ -127,8 +126,9 @@ function toObj(state, node, texprl) {
     return [];
   }
   if (node.type.name === "FunctionExpr") {
-    let value = state.doc
-      .sliceString(node.from, node.to)
+    let value = doc
+      .slice(node.from, node.to)
+      .toString()
       .replace(/[(][\s\S]+$/m, "");
     return [value];
   }
@@ -140,7 +140,7 @@ function toObj(state, node, texprl) {
 
 function collapseBinaryExpr(node) {
   const nodeIsArray = Array.isArray(node.value);
-  if (nodeIsArray && node.value[0] === "BinaryExpression") {
+  if (nodeIsArray && (node.value[0] === "BinaryExpression" || node.value[0] === "BinaryExpressionWrap")) {
     const children = [];
     if (node.children[0]) children.push(collapseBinaryExpr(node.children[0]));
     if (node.children[2]) children.push(collapseBinaryExpr(node.children[2]));
@@ -157,10 +157,9 @@ function collapseBinaryExpr(node) {
   }
 }
 
-export function toArrayAst(state, texprl) {
+export function toArrayAst(doc, tree, texprl) {
   const map = new Map();
   let top;
-  const tree = syntaxTree(state);
 
   const cursor = tree.cursor();
   do {
@@ -168,7 +167,7 @@ export function toArrayAst(state, texprl) {
     const obj = {
       from: node.from,
       to: node.to,
-      value: toObj(state, node, texprl),
+      value: toObj(doc, node, texprl),
       children: [],
     };
     if (!top) {
@@ -182,9 +181,7 @@ export function toArrayAst(state, texprl) {
     map.set(node, obj);
   } while (cursor.next());
 
-  console.log("pre:top=", top);
   top = collapseBinaryExpr(top);
-  console.log("top=", top);
   return top;
 }
 
@@ -223,14 +220,11 @@ const cssCompletionSource = (lookupCallback) => {
     let { state, pos } = context,
       node = syntaxTree(state).resolveInner(pos, -1);
 
-    console.log("node=", node, pos);
     if (node.type.name === "Lookup") {
-      console.log("node=HERE");
       return {
         from: node.from + 1,
         options: lookup.map(({ editorId, name }) => {
           const label = `${editorId}`;
-          console.log("node=", { label });
           return {
             type: "class",
             label: label,
@@ -243,10 +237,8 @@ const cssCompletionSource = (lookupCallback) => {
     } else if (node.type.name === "FunctionExpr") {
       return { from: node.from, options: pseudoClasses, span };
     } else if (node.parent && node.parent.type.name === "FunctionExpr") {
-      let parentValue = state.doc.sliceString(node.parent.from, node.parent.to);
-      console.log("node=value=", { parentValue });
+      let parentValue = state.doc.slice(node.parent.from, node.parent.to);
       if (parentValue.match(/^device/)) {
-        console.log("node=found");
         return {
           from: node.from + 1,
           options: [

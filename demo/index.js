@@ -1,5 +1,6 @@
 import stringify from "json-stringify-pretty-compact";
 import runtime from './runtime.js';
+import { syntaxTree } from "@codemirror/language";
 
 import "../texprl.css";
 import {
@@ -56,8 +57,7 @@ function toJson (obj) {
 }
 
 function showDebugInfo(texprl) {
-  const ast = toArrayAst(texprl.view.state, texprl);
-  console.log(":::: ast=", ast);
+  const ast = toArrayAst(texprl.view.state.doc, syntaxTree(texprl.view.state), texprl);
 
   const json = toJson(ast);
   try {
@@ -69,9 +69,7 @@ function showDebugInfo(texprl) {
 
   if (useRuntime) {
     try {
-      console.log("running", json[0])
       const result = runtime(json[0]);
-      console.log("result=", result);
 
       if (result.errors.length > 0) {
         exprResultEl.value = "";

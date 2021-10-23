@@ -2,6 +2,7 @@ import { StateEffect, StateField, EditorState, SelectionRange, Compartment } fro
 import { keymap, Decoration } from "@codemirror/view";
 import { toArrayAst } from "../parser/index.js";
 import { EditorView } from "@codemirror/basic-setup";
+import { syntaxTree } from "@codemirror/language";
 
 function walk (arr, path) {
   let out = arr;
@@ -41,7 +42,7 @@ export default function runtimeMarks (texprl) {
     create() { return Decoration.none },
     // This is called whenever the editor updates—it computes the new set
     update(value, tr) {
-      const ast = toArrayAst(tr.state, texprl);
+      const ast = toArrayAst(tr.state.doc, syntaxTree(tr.state), texprl);
       const json = toJson(ast);
       const result = texprl.runtime(json[0]);
 

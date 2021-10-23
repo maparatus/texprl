@@ -46,7 +46,6 @@ const nullFunction = () => {};
 
 function addWidgets(view, texprl) {
   let widgets = [];
-  console.log("==================================================");
 
   for (let { from, to } of view.visibleRanges) {
     syntaxTree(view.state).iterate({
@@ -80,7 +79,6 @@ const widgetsPlugin = (texprl) => {
       }
 
       update(update) {
-        console.log("this.decorations", this.decorations);
         this.decorations.chunk.forEach((chunk) => {
           chunk.value.forEach((v) => {
             if (v.widget.update) {
@@ -99,7 +97,6 @@ const widgetsPlugin = (texprl) => {
         return v.decorations;
       },
       provide: EditorView.updateListener.of((update) => {
-        console.log("foobar", update);
       }),
     }
   );
@@ -126,7 +123,6 @@ export class TexprlEditor {
     // console.log("transaction.effects", transaction, transaction.effects);
     // transaction.effects = this._runtimeEffects;
     // transaction.effects = transaction.effects.concat(this._runtimeEffects);
-    console.log("_onDispatch", transaction);
     this.view.update([transaction]);
   };
 
@@ -148,7 +144,6 @@ export class TexprlEditor {
   checkLookupFromBackendId = (key) => {
     // TODO: This should be contextual.
     const arr = [];
-    console.log(this.lookup);
     const found = this.lookup
       .flatMap((i) => i.values)
       .find((item) => {
@@ -160,7 +155,6 @@ export class TexprlEditor {
   checkLookup = (key) => {
     // TODO: This should be contextual.
     const arr = [];
-    console.log(this.lookup);
     const found = this.lookup
       .flatMap((i) => i.values)
       .find((item) => {
@@ -196,10 +190,6 @@ export class TexprlEditor {
             run: indentLess,
           },
         ]),
-        EditorView.updateListener.of((update) => {
-          // this.setRuntimeErrors([]);
-          console.log("updateListener", update);
-        }),
         runtimeMarks(this),
       ],
     });

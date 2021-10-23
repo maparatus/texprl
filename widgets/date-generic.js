@@ -22,20 +22,17 @@ export default class DateGenericWidget extends WidgetType {
     `;
 
     input.addEventListener("change", (e) => {
-      console.log("??? e", e.target.value);
       input.style.backgroundColor = e.target.value;
       input.setAttribute("value", e.target.value);
 
       const from = view.posAtDOM(wrap);
 
       if (from) {
-        console.log("!!!", { from }, this.value);
         const changes = {
           from: from - this.value.length - 2,
           to: from,
           insert: `"${e.target.value}"`,
         };
-        console.log("??? changes=", changes);
         const update = view.state.update({ changes });
         view.update([update]);
       }
