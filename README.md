@@ -41,7 +41,7 @@ The editor plugin also supports contextual autocomplete, we can define arguments
 Install the library
 
 ```
-npm i orangemug/texprl --save
+npm install orangemug/texprl --save
 ```
 
 ## Usage
