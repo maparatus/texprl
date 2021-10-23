@@ -1,4 +1,5 @@
 # Development
+
 Clone this repo and run the following steps:
 
 1.  `npm install`
@@ -6,4 +7,3 @@ Clone this repo and run the following steps:
 3.  `npm run dev`
 
 Go to <http://localhost:8000/demo/> to see a demo.
-

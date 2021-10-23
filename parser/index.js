@@ -5,7 +5,6 @@ import { LRLanguage } from "@codemirror/language";
 import { LanguageSupport } from "@codemirror/language";
 import { syntaxTree } from "@codemirror/language";
 
-
 const parser = parserSetup.configure({
   props: [
     styleTags({
@@ -23,7 +22,7 @@ const parser = parserSetup.configure({
   ],
 });
 
-export {parser};
+export { parser };
 
 const MATH = ["+", "-", "/", "*"];
 
@@ -31,7 +30,7 @@ function isMath(v) {
   return MATH.includes(v[0]);
 }
 
-function getPrecedence (node) {
+function getPrecedence(node) {
   if (!node) return -1;
   if (node[0] === "+" || node[0] === "-") return 0;
   if (node[0] === "*" || node[0] === "/") return 1;
@@ -42,9 +41,9 @@ function toMath(v, texprl, parent) {
   const parentPrecedence = getPrecedence(parent);
   const currentPrecedence = getPrecedence(v);
   const out = [
-    convertExpr(v[1], texprl, v), 
+    convertExpr(v[1], texprl, v),
     v[0],
-    convertExpr(v[2], texprl, v)
+    convertExpr(v[2], texprl, v),
   ].join("");
 
   if (parentPrecedence > currentPrecedence) {
@@ -140,7 +139,11 @@ function toObj(doc, node, texprl) {
 
 function collapseBinaryExpr(node) {
   const nodeIsArray = Array.isArray(node.value);
-  if (nodeIsArray && (node.value[0] === "BinaryExpression" || node.value[0] === "BinaryExpressionWrap")) {
+  if (
+    nodeIsArray &&
+    (node.value[0] === "BinaryExpression" ||
+      node.value[0] === "BinaryExpressionWrap")
+  ) {
     const children = [];
     if (node.children[0]) children.push(collapseBinaryExpr(node.children[0]));
     if (node.children[2]) children.push(collapseBinaryExpr(node.children[2]));
@@ -148,8 +151,7 @@ function collapseBinaryExpr(node) {
       ...node.children[1],
       children: children,
     };
-  }
-  else {
+  } else {
     return {
       ...node,
       children: node.children.map(collapseBinaryExpr),

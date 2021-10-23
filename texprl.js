@@ -1,4 +1,10 @@
-import { StateEffect, StateField, EditorState, SelectionRange, Compartment } from "@codemirror/state";
+import {
+  StateEffect,
+  StateField,
+  EditorState,
+  SelectionRange,
+  Compartment,
+} from "@codemirror/state";
 import { keymap, Decoration } from "@codemirror/view";
 import { basicSetup, EditorView } from "@codemirror/basic-setup";
 import { defaultKeymap } from "@codemirror/commands";
@@ -22,7 +28,7 @@ import {
   DateWidget,
   ReferenceWidget,
 } from "./widgets";
-import runtimeMarks from './marks/runtime.js';
+import runtimeMarks from "./marks/runtime.js";
 
 export {
   BooleanWidget,
@@ -35,14 +41,13 @@ export {
 export { toArrayAst, fromArrayAst };
 
 export class RuntimeError extends Error {
-  constructor (message, opts={}) {
+  constructor(message, opts = {}) {
     super(message);
     this.path = opts.path;
   }
 }
 
 const nullFunction = () => {};
-
 
 function addWidgets(view, texprl) {
   let widgets = [];
@@ -96,8 +101,7 @@ const widgetsPlugin = (texprl) => {
       decorations: (v) => {
         return v.decorations;
       },
-      provide: EditorView.updateListener.of((update) => {
-      }),
+      provide: EditorView.updateListener.of((update) => {}),
     }
   );
 };

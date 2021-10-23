@@ -139,14 +139,17 @@ editor.setLookup([
         <p>
           The texprl code editor —
           <button id="action-auto-format">Auto format</button>
-          <label style="display: block;">
-            <input type="checkbox" id="action-use-runtime"/>use runtime
-            — supports <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>pow</code>, <code>at</code>, <code>equals</code>, <code>not_equals</code>, <code>all</code>, <code>any</code> and <code>none</code>
+          <label style="display: block">
+            <input type="checkbox" id="action-use-runtime" />use runtime —
+            supports <code>+</code>, <code>-</code>, <code>*</code>,
+            <code>/</code>, <code>pow</code>, <code>at</code>,
+            <code>equals</code>, <code>not_equals</code>, <code>all</code>,
+            <code>any</code> and <code>none</code>
           </label>
         </p>
         <div>
           <div id="editor"></div>
-          <div id="expr-result-container" style="display: none;">
+          <div id="expr-result-container" style="display: none">
             <label>result=<input disabled id="expr-result" /></label>
             <span id="expr-error"></span>
           </div>

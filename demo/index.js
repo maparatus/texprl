@@ -1,5 +1,5 @@
 import stringify from "json-stringify-pretty-compact";
-import runtime from './runtime.js';
+import runtime from "./runtime.js";
 import { syntaxTree } from "@codemirror/language";
 
 import "../texprl.css";
@@ -38,8 +38,8 @@ const actionAutoformatButton = document.querySelector("#action-auto-format");
 
 let useRuntime = false;
 useRuntimeEl.addEventListener("change", (e) => {
-  const {checked} = e.target;
-  exprContainerEl.style.display = (checked ? 'block' : 'none');
+  const { checked } = e.target;
+  exprContainerEl.style.display = checked ? "block" : "none";
   useRuntime = checked;
 });
 
@@ -47,17 +47,20 @@ const exprContainerEl = document.querySelector("#expr-result-container");
 const exprResultEl = document.querySelector("#expr-result");
 const exprErrorEl = document.querySelector("#expr-error");
 
-function toJson (obj) {
+function toJson(obj) {
   if (Array.isArray(obj.value)) {
-    return obj.value.concat(obj.children.map(toJson))
-  }
-  else {
+    return obj.value.concat(obj.children.map(toJson));
+  } else {
     return obj.value;
   }
 }
 
 function showDebugInfo(texprl) {
-  const ast = toArrayAst(texprl.view.state.doc, syntaxTree(texprl.view.state), texprl);
+  const ast = toArrayAst(
+    texprl.view.state.doc,
+    syntaxTree(texprl.view.state),
+    texprl
+  );
 
   const json = toJson(ast);
   try {
@@ -73,9 +76,10 @@ function showDebugInfo(texprl) {
 
       if (result.errors.length > 0) {
         exprResultEl.value = "";
-        exprErrorEl.innerHTML = result.errors.map(err => err.message).join("<br>");
-      }
-      else {
+        exprErrorEl.innerHTML = result.errors
+          .map((err) => err.message)
+          .join("<br>");
+      } else {
         exprResultEl.value = JSON.stringify(result.output);
         exprErrorEl.innerText = "";
       }
