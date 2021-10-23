@@ -50,4 +50,5 @@ npm i orangemug/texprl --save
 
 
 [mapbox-gl-expressions]: https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/
-[maplibre-expressions]: https://docs.maptiler.com/gl-style-specification/expressions
+[maplibre-expressions]: https://maplibre.org/maplibre-gl-js-docs/style-spec/expressions/
+[maplibre-expressions-get]: https://maplibre.org/maplibre-gl-js-docs/style-spec/expressions/#get
