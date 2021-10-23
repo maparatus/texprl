@@ -1,8 +1,5 @@
 import {
-  StateEffect,
-  StateField,
   EditorState,
-  SelectionRange,
   Compartment,
 } from "@codemirror/state";
 import { keymap, Decoration } from "@codemirror/view";
@@ -10,17 +7,10 @@ import { basicSetup, EditorView } from "@codemirror/basic-setup";
 import { defaultKeymap } from "@codemirror/commands";
 import { indentMore, indentLess } from "@codemirror/commands";
 import {
-  PluginField,
-  WidgetType,
-  ViewUpdate,
   ViewPlugin,
 } from "@codemirror/view";
 import { syntaxTree } from "@codemirror/language";
-import { parser, plugin, fromArrayAst, toArrayAst } from "./parser/index.js";
-import { h, render } from "preact";
-import { v4 as uuidv4 } from "uuid";
-import Color from "color";
-import stringify from "json-stringify-pretty-compact";
+import { plugin, fromArrayAst, toArrayAst } from "./parser/index.js";
 import {
   BooleanWidget,
   ColorWidget,

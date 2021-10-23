@@ -1,11 +1,8 @@
 import {
   StateEffect,
   StateField,
-  EditorState,
-  SelectionRange,
-  Compartment,
 } from "@codemirror/state";
-import { keymap, Decoration } from "@codemirror/view";
+import { Decoration } from "@codemirror/view";
 import { toArrayAst } from "../parser/index.js";
 import { EditorView } from "@codemirror/basic-setup";
 import { syntaxTree } from "@codemirror/language";

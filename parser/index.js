@@ -1,5 +1,4 @@
 import { parser as parserSetup } from "./lang.js";
-import { foldNodeProp, foldInside, indentNodeProp } from "@codemirror/language";
 import { styleTags, tags } from "@codemirror/highlight";
 import { LRLanguage } from "@codemirror/language";
 import { LanguageSupport } from "@codemirror/language";
