@@ -4,13 +4,13 @@
   "main": "texprl.js",
   "type": "module",
   "scripts": {
-    "dev": "npm run build:grammer && snowpack --config config/snowpack.config.mjs dev",
+    "dev": "npm run build:grammar && snowpack --config config/snowpack.config.mjs dev",
     "test": "mocha test/index.js",
     "lint": "npx prettier .",
     "lint:fix": "npx prettier --write .",
     "build": "npm run build:grammar && npm run build:snowpack",
     "build:snowpack": "snowpack --config config/snowpack.config.mjs build",
-    "build:grammer": "lezer-generator ./parser/lang.grammar -o ./parser/lang.js"
+    "build:grammar": "lezer-generator ./parser/lang.grammar -o ./parser/lang.js"
   },
   "devDependencies": {
     "@lezer/generator": "^0.15.2",
