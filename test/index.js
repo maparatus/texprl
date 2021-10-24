@@ -9,7 +9,7 @@ function hasError(expected) {
 describe("texprl", () => {
   describe("parser", () => {
     assertions.forEach(
-      ({ only, input, expected, errors: expectedError }, index) => {
+      ({ skip, only, input, expected, errors: expectedError, checkLookup }, index) => {
         const indexStr = `${index}`.padStart(3, "0");
         let statusStr;
         if (expectedError) {
@@ -27,10 +27,14 @@ describe("texprl", () => {
 
           try {
             const tree = parser.parse(input);
-            actual = toArrayAst(input, tree);
+            actual = toArrayAst(input, tree, { checkLookup });
           } catch (error) {
             actualError = error;
           }
+
+          // setTimeout(() => {
+          //   console.log(JSON.stringify(actual, null, 2));
+          // }, 100)
 
           if (expectedError && actualError) {
             assert(actualError);
@@ -38,10 +42,14 @@ describe("texprl", () => {
             assert.deepStrictEqual(actual, expected);
           } else {
             // console.log(JSON.stringify(actual, null, 2));
+            console.error(actualError);
             throw "missing";
           }
         };
-        if (only) {
+        if (skip) {
+          it.skip(name, fn);
+        }
+        else if (only) {
           it.only(name, fn);
         } else {
           it(name, fn);
