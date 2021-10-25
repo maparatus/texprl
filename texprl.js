@@ -2,8 +2,8 @@ import {
   EditorState,
   Compartment,
 } from "@codemirror/state";
-import { keymap, Decoration } from "@codemirror/view";
-import { basicSetup, EditorView } from "@codemirror/basic-setup";
+import { keymap, Decoration, EditorView } from "@codemirror/view";
+import { basicSetup } from "./basic-setup.js";
 import { defaultKeymap } from "@codemirror/commands";
 import { indentMore, indentLess } from "@codemirror/commands";
 import {
@@ -121,18 +121,19 @@ export class TexprlEditor {
   };
 
   autoFormat = () => {
-    const formattedText = fromArrayAst(toArrayAst(this.view, this), this);
-    console.log("autoFormat", { formattedText });
-    const state = this.view.state;
-    this.view.dispatch({
-      changes: [
-        {
-          from: 0,
-          to: state.doc.length,
-          insert: formattedText,
-        },
-      ],
-    });
+    console.log("TODO");
+    // const formattedText = fromArrayAst(toArrayAst(this.view, this), this);
+    // console.log("autoFormat", { formattedText });
+    // const state = this.view.state;
+    // this.view.dispatch({
+    //   changes: [
+    //     {
+    //       from: 0,
+    //       to: state.doc.length,
+    //       insert: formattedText,
+    //     },
+    //   ],
+    // });
   };
 
   checkLookupFromBackendId = (key) => {
