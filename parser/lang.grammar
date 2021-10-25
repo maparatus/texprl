@@ -5,6 +5,12 @@
 commaSep<expr> { commaSep1<expr>? }
 commaSep1<expr> { expr ("," expr?)* }
 
+// Variable {
+//   VariableName "=" expression ";"
+// }
+// 
+// @top Program { (Variable+)? expression }
+
 @top Program { expression }
 
 @precedence {
@@ -23,12 +29,18 @@ FunctionExpr {
 }
 
 List { "[" commaSep<expression> "]" }
+Dictionary { "{" commaSep<KeyValue> "}" }
+
+KeyValue {
+  (dictionaryName | String) ":" expression
+}
 
 @skip {} {
   String { stringStart (stringContent)* stringEnd }
 }
 
 expression {
+  VariableName |
   Lookup |
   Bool |
   String |
@@ -36,7 +48,8 @@ expression {
   binaryExpressionWrap |
   BinaryExpression |
   FunctionExpr |
-  List
+  List |
+  Dictionary
 }
 
 dt {
@@ -58,6 +71,8 @@ BinaryExpression {
 
 @tokens {
   Bool { "true" | "false" }
+  dictionaryName { $[a-z_]+ ($[a-z_0-9]+)* }
+  VariableName { "$" $[a-z_]+ ($[a-z_0-9]+)* }
   functionStart { $[a-z_]+ ($[a-z_0-9]+)* "(" }
   functionEnd { ")" }
   Integer { ($[-])* std.digit+ }
