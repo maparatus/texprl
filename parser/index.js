@@ -167,7 +167,7 @@ export function toArrayAst(doc, tree, texprl) {
     const node = cursor.node;
     const obj = {
       from: node.from,
-      to: Math.min(node.to, tree.length-1),
+      to: Math.min(node.to, tree.length - 1),
       value: toObj(doc, node, texprl),
       children: [],
     };

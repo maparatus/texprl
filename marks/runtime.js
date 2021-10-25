@@ -1,7 +1,4 @@
-import {
-  StateEffect,
-  StateField,
-} from "@codemirror/state";
+import { StateEffect, StateField } from "@codemirror/state";
 import { Decoration } from "@codemirror/view";
 import { toArrayAst } from "../parser/index.js";
 import { EditorView } from "@codemirror/view";
@@ -64,13 +61,15 @@ export default function runtimeMarks(texprl) {
 
         if (markFrom !== markTo) {
           const mark = addMarks.of([
-            runtimeErrorMark.range(from < to ? from : Math.max(0, from - 1), to),
+            runtimeErrorMark.range(
+              from < to ? from : Math.max(0, from - 1),
+              to
+            ),
           ]);
           value = value.update({
             add: mark.value,
           });
-        }
-        else {
+        } else {
           console.warn("skipping node=", node);
         }
       });

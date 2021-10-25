@@ -1,12 +1,17 @@
-import {keymap, highlightSpecialChars, drawSelection, highlightActiveLine} from "@codemirror/view"
-import {history, historyKeymap} from "@codemirror/history"
-import {indentOnInput} from "@codemirror/language"
-import {defaultKeymap} from "@codemirror/commands"
-import {bracketMatching} from "@codemirror/matchbrackets"
-import {closeBrackets, closeBracketsKeymap} from "@codemirror/closebrackets"
-import {autocompletion, completionKeymap} from "@codemirror/autocomplete"
-import {defaultHighlightStyle} from "@codemirror/highlight"
-import {EditorState} from "@codemirror/state";
+import {
+  keymap,
+  highlightSpecialChars,
+  drawSelection,
+  highlightActiveLine,
+} from "@codemirror/view";
+import { history, historyKeymap } from "@codemirror/history";
+import { indentOnInput } from "@codemirror/language";
+import { defaultKeymap } from "@codemirror/commands";
+import { bracketMatching } from "@codemirror/matchbrackets";
+import { closeBrackets, closeBracketsKeymap } from "@codemirror/closebrackets";
+import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
+import { defaultHighlightStyle } from "@codemirror/highlight";
+import { EditorState } from "@codemirror/state";
 
 export const basicSetup = [
   highlightSpecialChars(),
@@ -24,5 +29,5 @@ export const basicSetup = [
     ...defaultKeymap,
     ...historyKeymap,
     ...completionKeymap,
-  ])
-]
+  ]),
+];

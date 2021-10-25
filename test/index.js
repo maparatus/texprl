@@ -7,22 +7,27 @@ function hasError(expected) {
   return !!JSON.stringify(expected).match(/\$\$ERROR/);
 }
 
-function wrap (input) {
+function wrap(input) {
   const lines = ["", ...input.split(/\n/), ""];
-  
-  return lines.map((line, idx) => {
-    let mark;
-    if (idx === 0) mark = '├──'
-    else if (idx === lines.length-1) mark = '└──';
-    else mark = '│';
-    return `        ${mark} ${line}`;
-  }).join("\n");
+
+  return lines
+    .map((line, idx) => {
+      let mark;
+      if (idx === 0) mark = "├──";
+      else if (idx === lines.length - 1) mark = "└──";
+      else mark = "│";
+      return `        ${mark} ${line}`;
+    })
+    .join("\n");
 }
 
 describe("texprl", () => {
   describe("parse", () => {
     parseTests.forEach(
-      ({ skip, only, input, expected, errors: expectedError, checkLookup }, index) => {
+      (
+        { skip, only, input, expected, errors: expectedError, checkLookup },
+        index
+      ) => {
         const indexStr = `${index}`.padStart(3, "0");
         let statusStr;
         if (expectedError) {
@@ -35,8 +40,7 @@ describe("texprl", () => {
         let name;
         if (input.match(/\n/)) {
           name = `test #${indexStr} ${statusStr}\n${wrap(input)}`;
-        }
-        else {
+        } else {
           name = `test #${indexStr} ${statusStr} — '${input}'`;
         }
 
@@ -51,9 +55,9 @@ describe("texprl", () => {
             actualError = error;
           }
 
-          // setTimeout(() => {
-          //   console.log(JSON.stringify(actual, null, 2));
-          // }, 100)
+          setTimeout(() => {
+            console.log(JSON.stringify(actual, null, 2));
+          }, 100);
 
           if (expectedError && actualError) {
             assert(actualError);
@@ -67,8 +71,7 @@ describe("texprl", () => {
         };
         if (skip) {
           it.skip(name, fn);
-        }
-        else if (only) {
+        } else if (only) {
           it.only(name, fn);
         } else {
           it(name, fn);
@@ -79,13 +82,15 @@ describe("texprl", () => {
 
   describe("format", () => {
     formatTests.forEach(
-      ({ skip, only, input, expected, errors: expectedError, checkLookup }, index) => {
+      (
+        { skip, only, input, expected, errors: expectedError, checkLookup },
+        index
+      ) => {
         const indexStr = `${index}`.padStart(3, "0");
         let name;
         if (input.match(/\n/)) {
           name = `test #${indexStr}\n${wrap(input)}`;
-        }
-        else {
+        } else {
           name = `test #${indexStr} — '${input}'`;
         }
 
@@ -117,8 +122,7 @@ describe("texprl", () => {
         };
         if (skip) {
           it.skip(name, fn);
-        }
-        else if (only) {
+        } else if (only) {
           it.only(name, fn);
         } else {
           it(name, fn);

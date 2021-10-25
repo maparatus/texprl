@@ -1,14 +1,9 @@
-import {
-  EditorState,
-  Compartment,
-} from "@codemirror/state";
+import { EditorState, Compartment } from "@codemirror/state";
 import { keymap, Decoration, EditorView } from "@codemirror/view";
 import { basicSetup } from "./basic-setup.js";
 import { defaultKeymap } from "@codemirror/commands";
 import { indentMore, indentLess } from "@codemirror/commands";
-import {
-  ViewPlugin,
-} from "@codemirror/view";
+import { ViewPlugin } from "@codemirror/view";
 import { syntaxTree } from "@codemirror/language";
 import { plugin, fromArrayAst, toArrayAst } from "./parser/index.js";
 import {
