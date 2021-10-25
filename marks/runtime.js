@@ -59,12 +59,20 @@ export default function runtimeMarks(texprl) {
         const node = walk(ast, error.path);
         const { from, to } = node;
 
-        const mark = addMarks.of([
-          runtimeErrorMark.range(from < to ? from : from - 1, to),
-        ]);
-        value = value.update({
-          add: mark.value,
-        });
+        const markFrom = from < to ? from : Math.max(0, from - 1);
+        const markTo = to;
+
+        if (markFrom !== markTo) {
+          const mark = addMarks.of([
+            runtimeErrorMark.range(from < to ? from : Math.max(0, from - 1), to),
+          ]);
+          value = value.update({
+            add: mark.value,
+          });
+        }
+        else {
+          console.warn("skipping node=", node);
+        }
       });
 
       return value;
