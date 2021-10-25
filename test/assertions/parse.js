@@ -1144,25 +1144,25 @@ foo(   (  6  +  5  )  /      2     )
     input: `{a: foo({b: 3})}`,
     expected: null,
   },
-  {
-    skip: true,
-    input: (
-`$foo = 3; $bar = "string";
-foo($foo, true, 1, $bar, 3.14)`
-    ),
-    expected: null,
-  },
-  {
-    skip: true,
-    input: (
-`$foo = any(true, false);
-$bar = any(false, true);
-all(
-  $foo, $bar
-)`
-    ),
-    expected: null,
-  },
+  // {
+  //   skip: true,
+  //   input: (
+// `$foo = 3; $bar = "string";
+// foo($foo, true, 1, $bar, 3.14)`
+  //   ),
+  //   expected: null,
+  // },
+  // {
+  //   skip: true,
+  //   input: (
+// `$foo = any(true, false);
+// $bar = any(false, true);
+// all(
+  // $foo, $bar
+// )`
+  //   ),
+  //   expected: null,
+  // },
   {
     input: (
 `interpolate_hcl(linear(), 3,
