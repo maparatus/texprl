@@ -4,7 +4,7 @@ import {
 } from "@codemirror/state";
 import { Decoration } from "@codemirror/view";
 import { toArrayAst } from "../parser/index.js";
-import { EditorView } from "@codemirror/basic-setup";
+import { EditorView } from "@codemirror/view";
 import { syntaxTree } from "@codemirror/language";
 
 function walk(arr, path) {
