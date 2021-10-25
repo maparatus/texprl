@@ -54,6 +54,15 @@ export default function runtimeMarks(texprl) {
 
       result.errors.forEach((error) => {
         const node = walk(ast, error.path);
+
+        if (!node) {
+          console.debug("TODO: No node for error", {
+            error: error,
+            path: error.path,
+          });
+          return;
+        }
+
         const { from, to } = node;
 
         const markFrom = from < to ? from : Math.max(0, from - 1);
