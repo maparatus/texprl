@@ -91,22 +91,22 @@ export function fromArrayAst(arr, texprl) {
 function toObj(doc, node, texprl) {
   if (node.type.name === "Number") {
     let value = doc.slice(node.from, node.to);
-    return Number(value);
+    return Number(value.toString());
   }
   if (node.type.name === "Bool") {
     let value = doc.slice(node.from, node.to);
-    return value === "true" ? true : false;
+    return value.toString() === "true" ? true : false;
   }
   if (node.type.name === "Lookup") {
     let value = doc.slice(node.from, node.to);
-    const found = texprl.checkLookup(value.replace(/^#/, ""));
+    const found = texprl.checkLookup(value.toString().replace(/^#/, ""));
     if (found) {
       return found.backendId;
     }
   }
   if (node.type.name === "String") {
     let value = doc.slice(node.from, node.to);
-    return value.replace(/^"|"$/g, "");
+    return value.toString().replace(/^"|"$/g, "");
   }
   if (node.type.name === "List") {
     return ["array"];
@@ -167,7 +167,7 @@ export function toArrayAst(doc, tree, texprl) {
     const node = cursor.node;
     const obj = {
       from: node.from,
-      to: node.to,
+      to: Math.min(node.to, tree.length-1),
       value: toObj(doc, node, texprl),
       children: [],
     };
@@ -239,7 +239,7 @@ const completionSource = (lookupCallback) => {
       return { from: node.from, options: pseudoClasses, span };
     } else if (node.parent && node.parent.type.name === "FunctionExpr") {
       let parentValue = state.doc.slice(node.parent.from, node.parent.to);
-      if (parentValue.match(/^device/)) {
+      if (parentValue.toString().match(/^device/)) {
         return {
           from: node.from + 1,
           options: [
