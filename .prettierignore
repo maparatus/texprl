@@ -1,3 +1,4 @@
-node_modules
-parser/lang.js
-parser/lang.terms.js
+/node_modules
+/parser/lang.js
+/parser/lang.terms.js
+/build
