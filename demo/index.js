@@ -1,4 +1,4 @@
-import { basicSetup } from "../basic-setup.js";
+import { basicSetup } from "../codemirror";
 import { EditorView } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
 import stringify from "json-stringify-pretty-compact";

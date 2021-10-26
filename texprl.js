@@ -1,7 +1,9 @@
+import basicSetup from "./codemirror/setup/basic";
 import parserPlugin from "./plugins/parser";
 import widgetsPlugin from "./plugins/widgets";
 import runtimePlugin from "./plugins/runtime/index.js";
 
+export { basicSetup };
 export { RuntimeError } from "./errors";
 export { toArrayAst, fromArrayAst } from "./parser/index.js";
 

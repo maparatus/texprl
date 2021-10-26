@@ -13,7 +13,7 @@ import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
 import { defaultHighlightStyle } from "@codemirror/highlight";
 import { EditorState } from "@codemirror/state";
 
-export const basicSetup = [
+const basicSetup = [
   highlightSpecialChars(),
   history(),
   drawSelection(),
@@ -41,3 +41,5 @@ export const basicSetup = [
     },
   ]),
 ];
+
+export default basicSetup;
