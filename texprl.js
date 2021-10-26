@@ -1,9 +1,9 @@
-import { plugin, fromArrayAst, toArrayAst } from "./parser/index.js";
-import { widgetsPlugin } from "./widgets";
-import runtimeMarks from "./marks/runtime.js";
+import { plugin as parserPlugin } from "./parser/index.js";
+import widgetsPlugin from "./widgets";
+import runtimePlugin from "./marks/runtime.js";
 
 export { RuntimeError } from "./errors";
-export { toArrayAst, fromArrayAst };
+export { toArrayAst, fromArrayAst } from "./parser/index.js";
 
 
 class TexprlEditor {
@@ -11,9 +11,11 @@ class TexprlEditor {
   constructor(opts = {}) {
     this.lookup = opts.lookup ? opts.lookup : [];
     this.runtime = opts.runtime ? opts.runtime: (() => {});
+
+    // Initialize plugins...
     this._widgetPlugin = widgetsPlugin(this);
-    this._parserPlugin = plugin(this.onLookup);
-    this._runtimePlugin = runtimeMarks(this);
+    this._parserPlugin = parserPlugin(this.onLookup);
+    this._runtimePlugin = runtimePlugin(this);
   }
 
   checkLookupFromBackendId = (key) => {
