@@ -1,3 +1,4 @@
+import { Compartment } from "@codemirror/state";
 import { parser as parserSetup } from "./lang.js";
 import { styleTags, tags } from "@codemirror/highlight";
 import { LRLanguage } from "@codemirror/language";
@@ -88,7 +89,25 @@ export function fromArrayAst(arr, texprl) {
   return foo;
 }
 
+function tryit(fn, dflt) {
+  try {
+    return fn();
+  } catch (err) {
+    // console.debug(err);
+  }
+  return dflt;
+}
+
 function toObj(doc, node, texprl) {
+  // if (node.parent && node.parent.type && (node.parent.type.name === "Dictionary" || node.parent.type.name === "List")) {
+  //   let value = doc.slice(node.from, node.to).toString();
+  //   const out = tryit(() => JSON.parse(value), {});
+  //   console.log("??? out=", out, value);
+  //   return out;
+  // }
+  if (node.type.name === "Dictionary") {
+    return ["literal"];
+  }
   if (node.type.name === "Number") {
     let value = doc.slice(node.from, node.to);
     return Number(value.toString());
@@ -274,9 +293,15 @@ const completionSource = (lookupCallback) => {
   };
 };
 
-export function plugin(lookupCallback) {
+function pluginSetup(lookupCallback) {
   const completion = exampleLanguage.data.of({
     autocomplete: completionSource(lookupCallback),
   });
   return new LanguageSupport(exampleLanguage, [completion]);
 }
+
+export function plugin (lookupCallback) {
+  const language = new Compartment();
+  return language.of(pluginSetup(lookupCallback));
+}
+
