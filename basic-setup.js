@@ -6,7 +6,7 @@ import {
 } from "@codemirror/view";
 import { history, historyKeymap } from "@codemirror/history";
 import { indentOnInput } from "@codemirror/language";
-import { defaultKeymap } from "@codemirror/commands";
+import { defaultKeymap, indentMore, indentLess } from "@codemirror/commands";
 import { bracketMatching } from "@codemirror/matchbrackets";
 import { closeBrackets, closeBracketsKeymap } from "@codemirror/closebrackets";
 import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
@@ -29,5 +29,15 @@ export const basicSetup = [
     ...defaultKeymap,
     ...historyKeymap,
     ...completionKeymap,
+    {
+      key: "Tab",
+      preventDefault: true,
+      run: indentMore,
+    },
+    {
+      key: "Shift-Tab",
+      preventDefault: true,
+      run: indentLess,
+    },
   ]),
 ];
