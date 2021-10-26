@@ -1,5 +1,5 @@
 import assert from "assert";
-import { parser, toArrayAst } from "../parser/index.js";
+import parser, { toArrayAst } from "../parser/index.js";
 import parseTests from "./assertions/parse.js";
 import formatTests from "./assertions/format.js";
 
