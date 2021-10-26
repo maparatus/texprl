@@ -173,11 +173,11 @@ function collapseBinaryExpr(node) {
   }
 }
 
-function renameFunc (expr, renames) {
+function renameFunc(expr, renames) {
   if (Array.isArray(expr.value)) {
     const currentFunctionName = expr.value[0];
     const found = renames.find(([astName, textName]) => {
-      return textName === currentFunctionName
+      return textName === currentFunctionName;
     });
 
     if (found) {
@@ -191,7 +191,7 @@ function renameFunc (expr, renames) {
   return expr;
 }
 
-function retypeFunc (expr, types) {
+function retypeFunc(expr, types) {
   const type = types[expr.value[0]];
   if (type) {
     return {
@@ -203,41 +203,47 @@ function retypeFunc (expr, types) {
           if (argType.includes("object")) {
             return {
               ...subExpr,
-              value: {testing: "TESTING"},
-            }
-          }
-          else if (argType.includes("array")) {
+              value: { testing: "TESTING" },
+            };
+          } else if (argType.includes("array")) {
             return {
               ...subExpr,
               value: ["TESTING"],
-            }
+            };
           }
         }
         return subExpr;
-      })
-    }
+      }),
+    };
     return expr;
-
   }
   return expr;
 }
 
-function retypeLiterals (expr, types) {
-  const out = retypeFunc({
-    ...expr,
-    children: expr.children.map((subExpr) => retypeLiterals(subExpr, types)),
-  }, types);
+function retypeLiterals(expr, types) {
+  const out = retypeFunc(
+    {
+      ...expr,
+      children: expr.children.map((subExpr) => retypeLiterals(subExpr, types)),
+    },
+    types
+  );
 
-  return out ;
+  return out;
 }
 
-function renameFunctions (expr, renames) {
-  const out = renameFunc({
-    ...expr,
-    children: expr.children.map((subExpr) => renameFunctions(subExpr, renames)),
-  }, renames);
+function renameFunctions(expr, renames) {
+  const out = renameFunc(
+    {
+      ...expr,
+      children: expr.children.map((subExpr) =>
+        renameFunctions(subExpr, renames)
+      ),
+    },
+    renames
+  );
 
-  return out ;
+  return out;
 }
 
 export function toArrayAst(doc, tree, texprl) {

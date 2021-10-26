@@ -33,7 +33,7 @@ const definition = {
       ["heatmap-density", "heatmap_density"],
     ],
     types: {
-      "format": (index) => {
+      format: (index) => {
         if (index % 2 === 1) {
           return ["object"];
         }
@@ -43,12 +43,12 @@ const definition = {
           return ["object"];
         }
       },
-      "collator": (index) => {
+      collator: (index) => {
         if (index % 2 === 1) {
           return ["object"];
         }
       },
-      "literal": (index) => {
+      literal: (index) => {
         return ["object", "array", "any"];
       },
     },
