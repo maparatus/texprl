@@ -67,6 +67,19 @@ function showDebugInfo(texprl) {
 
 const texprlInstance = texprl({
   runtime: runtime,
+  functions: {
+    renames: [
+      ["%", "mod"],
+      ["^", "pow"],
+      ["!", "not"],
+      ["!=", "ne"],
+      ["==", "eq"],
+      ["<", "lt"],
+      ["<=", "le"],
+      [">", "gt"],
+      [">=", "ge"],
+    ]
+  },
   lookup: () => {
     return [
       {

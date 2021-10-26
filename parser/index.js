@@ -173,6 +173,33 @@ function collapseBinaryExpr(node) {
   }
 }
 
+function renameFunc (expr, renames) {
+  if (Array.isArray(expr.value)) {
+    const currentFunctionName = expr.value[0];
+    const found = renames.find(([astName, textName]) => {
+      return textName === currentFunctionName
+    });
+
+    if (found) {
+      const [astName] = found;
+      return {
+        ...expr,
+        value: [astName],
+      };
+    }
+  }
+  return expr;
+}
+
+function renameFunctions (expr, renames) {
+  const out = renameFunc({
+    ...expr,
+    children: expr.children.map((subExpr) => renameFunctions(subExpr, renames)),
+  }, renames);
+
+  return out ;
+}
+
 export function toArrayAst(doc, tree, texprl) {
   const map = new Map();
   let top;
@@ -198,5 +225,6 @@ export function toArrayAst(doc, tree, texprl) {
   } while (cursor.next());
 
   top = collapseBinaryExpr(top);
+  top = renameFunctions(top, texprl.functionRenames);
   return top;
 }

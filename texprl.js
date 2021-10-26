@@ -11,6 +11,7 @@ class TexprlEditor {
   constructor(opts = {}) {
     this.lookup = opts.lookup ? opts.lookup : [];
     this.runtime = opts.runtime ? opts.runtime : () => {};
+    this.functionRenames = (opts.functions || {}).renames || [];
     this.runtimeEnabled = false;
 
     // Initialize plugins...
