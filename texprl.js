@@ -1,6 +1,6 @@
-import { plugin as parserPlugin } from "./parser/index.js";
-import widgetsPlugin from "./widgets";
-import runtimePlugin from "./marks/runtime.js";
+import parserPlugin from "./plugins/parser";
+import widgetsPlugin from "./plugins/widgets";
+import runtimePlugin from "./plugins/runtime/index.js";
 
 export { RuntimeError } from "./errors";
 export { toArrayAst, fromArrayAst } from "./parser/index.js";

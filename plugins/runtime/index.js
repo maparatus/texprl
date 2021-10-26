@@ -1,6 +1,6 @@
 import { StateEffect, StateField } from "@codemirror/state";
 import { Decoration } from "@codemirror/view";
-import { toArrayAst } from "../parser/index.js";
+import { toArrayAst } from "../../parser/index.js";
 import { EditorView } from "@codemirror/view";
 import { syntaxTree } from "@codemirror/language";
 
