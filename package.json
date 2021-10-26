@@ -8,7 +8,7 @@
     "test": "mocha test/index.js",
     "lint": "npx prettier .",
     "lint:fix": "npx prettier --write .",
-    "build": "npm run build:grammar && npm run build:snowpack",
+    "build": "npm run build:grammar && npm run build:snowpack && touch ./build/.nojekyll",
     "build:snowpack": "snowpack --config config/snowpack.config.mjs build",
     "build:grammar": "lezer-generator ./parser/lang.grammar -o ./parser/lang.js"
   },
