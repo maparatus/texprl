@@ -23,13 +23,6 @@ const exprResultEl = qs("#expr-result");
 const exprErrorEl = qs("#expr-error");
 const el = qs("#editor");
 
-let useRuntime = false;
-useRuntimeEl.addEventListener("change", (e) => {
-  const { checked } = e.target;
-  exprContainerEl.style.display = checked ? "block" : "none";
-  useRuntime = checked;
-});
-
 
 function toJson(obj) {
   if (Array.isArray(obj.value)) {
@@ -98,6 +91,15 @@ const texprlInstance = texprl({
     ];
   },
 });
+
+let useRuntime = false;
+useRuntimeEl.addEventListener("change", (e) => {
+  const { checked } = e.target;
+  exprContainerEl.style.display = checked ? "block" : "none";
+  texprlInstance.setRuntimeEnabled(checked);
+  useRuntime = checked;
+});
+
 
 const state = EditorState.create({
   doc: "1-1-1+9+pow(2, 2)",

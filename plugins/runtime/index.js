@@ -52,6 +52,10 @@ export default function runtimeMarks(texprl) {
         filter: () => false,
       });
 
+      if (!texprl.runtimeEnabled) {
+        return value;
+      }
+
       result.errors.forEach((error) => {
         const node = walk(ast, error.path);
 

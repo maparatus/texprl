@@ -11,11 +11,16 @@ class TexprlEditor {
   constructor(opts = {}) {
     this.lookup = opts.lookup ? opts.lookup : [];
     this.runtime = opts.runtime ? opts.runtime: (() => {});
+    this.runtimeEnabled = false;
 
     // Initialize plugins...
     this._widgetPlugin = widgetsPlugin(this);
     this._parserPlugin = parserPlugin(this.onLookup);
     this._runtimePlugin = runtimePlugin(this);
+  }
+
+  setRuntimeEnabled (bool) {
+    this.runtimeEnabled = !!bool;
   }
 
   checkLookupFromBackendId = (key) => {
