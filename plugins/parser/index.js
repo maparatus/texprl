@@ -31,8 +31,6 @@ const pseudoClasses = [
   "zoom",
 ].map((name) => ({ type: "class", label: name }));
 
-
-
 const span = /^[\w-]*/;
 const completionSource = (lookupCallback) => {
   return (context) => {
@@ -100,8 +98,7 @@ function pluginSetup(lookupCallback) {
   return new LanguageSupport(exampleLanguage, [completion]);
 }
 
-export default function plugin (lookupCallback) {
+export default function plugin(lookupCallback) {
   const language = new Compartment();
   return language.of(pluginSetup(lookupCallback));
 }
-

@@ -6,11 +6,7 @@ import runtime from "./runtime.js";
 import { syntaxTree } from "@codemirror/language";
 
 import "../texprl.css";
-import texprl, {
-  toArrayAst,
-  fromArrayAst,
-} from "../texprl.js";
-
+import texprl, { toArrayAst, fromArrayAst } from "../texprl.js";
 
 const qs = document.querySelector.bind(document);
 const useRuntimeEl = qs("#action-use-runtime");
@@ -23,7 +19,6 @@ const exprResultEl = qs("#expr-result");
 const exprErrorEl = qs("#expr-error");
 const el = qs("#editor");
 
-
 function toJson(obj) {
   if (Array.isArray(obj.value)) {
     return obj.value.concat(obj.children.map(toJson));
@@ -35,11 +30,7 @@ function toJson(obj) {
 function showDebugInfo(texprl) {
   console.log("showDebugInfo", texprl);
   return (view) => {
-    const ast = toArrayAst(
-      view.state.doc,
-      syntaxTree(view.state),
-      texprl
-    );
+    const ast = toArrayAst(view.state.doc, syntaxTree(view.state), texprl);
 
     const json = toJson(ast);
     try {
@@ -71,13 +62,13 @@ function showDebugInfo(texprl) {
 
     debugEl.value = view.state.doc.text.join("\n");
     sExprEl.value = stringify(ast);
-  }
+  };
 }
 
 const texprlInstance = texprl({
   runtime: runtime,
   lookup: () => {
-    return  [
+    return [
       {
         editorId: "jane",
         backendId: "6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b",
@@ -99,7 +90,6 @@ useRuntimeEl.addEventListener("change", (e) => {
   texprlInstance.setRuntimeEnabled(checked);
   useRuntime = checked;
 });
-
 
 const state = EditorState.create({
   doc: "1-1-1+9+pow(2, 2)",

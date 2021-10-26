@@ -1,3 +1,3 @@
-import basicSetup from './setup/basic.js';
+import basicSetup from "./setup/basic.js";
 
 export { basicSetup };

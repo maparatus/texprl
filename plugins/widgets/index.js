@@ -42,7 +42,7 @@ function addWidgets(view, texprl) {
   return Decoration.set(widgets);
 }
 
-export default function widgetsPlugin (texprl) {
+export default function widgetsPlugin(texprl) {
   return ViewPlugin.fromClass(
     class {
       constructor(view) {
@@ -71,4 +71,3 @@ export default function widgetsPlugin (texprl) {
     }
   );
 }
-

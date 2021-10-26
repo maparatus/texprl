@@ -7,12 +7,10 @@ export { basicSetup };
 export { RuntimeError } from "./errors";
 export { toArrayAst, fromArrayAst } from "./parser/index.js";
 
-
 class TexprlEditor {
-
   constructor(opts = {}) {
     this.lookup = opts.lookup ? opts.lookup : [];
-    this.runtime = opts.runtime ? opts.runtime: (() => {});
+    this.runtime = opts.runtime ? opts.runtime : () => {};
     this.runtimeEnabled = false;
 
     // Initialize plugins...
@@ -21,7 +19,7 @@ class TexprlEditor {
     this._runtimePlugin = runtimePlugin(this);
   }
 
-  setRuntimeEnabled (bool) {
+  setRuntimeEnabled(bool) {
     this.runtimeEnabled = !!bool;
   }
 
@@ -46,14 +44,10 @@ class TexprlEditor {
   };
 
   plugin = () => {
-    return [
-      this._widgetPlugin,
-      this._parserPlugin,
-      this._runtimePlugin,
-    ];
-  }
+    return [this._widgetPlugin, this._parserPlugin, this._runtimePlugin];
+  };
 }
 
-export default function texprl (opts) {
+export default function texprl(opts) {
   return new TexprlEditor(opts);
 }
