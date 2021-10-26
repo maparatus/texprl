@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  pages:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,3 +19,10 @@ jobs:
           cache: "npm"
       - run: npm install
       - run: npm run build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build # The folder the action should deploy.
+          single-commit: true
+          dry-run: true
