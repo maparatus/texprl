@@ -4,6 +4,7 @@ import { EditorState } from "@codemirror/state";
 import stringify from "json-stringify-pretty-compact";
 import runtime from "./runtime.js";
 import { syntaxTree } from "@codemirror/language";
+import maplibreDefinition from "../maplibre";
 
 import "../texprl.css";
 import texprl, { toArrayAst, fromArrayAst } from "../texprl.js";
@@ -66,20 +67,8 @@ function showDebugInfo(texprl) {
 }
 
 const texprlInstance = texprl({
+  ...maplibreDefinition,
   runtime: runtime,
-  functions: {
-    renames: [
-      ["%", "mod"],
-      ["^", "pow"],
-      ["!", "not"],
-      ["!=", "ne"],
-      ["==", "eq"],
-      ["<", "lt"],
-      ["<=", "le"],
-      [">", "gt"],
-      [">=", "ge"],
-    ]
-  },
   lookup: () => {
     return [
       {

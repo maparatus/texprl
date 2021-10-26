@@ -191,6 +191,46 @@ function renameFunc (expr, renames) {
   return expr;
 }
 
+function retypeFunc (expr, types) {
+  const type = types[expr.value[0]];
+  if (type) {
+    return {
+      ...expr,
+      children: expr.children.map((subExpr, idx) => {
+        const argType = type(idx) || [];
+        if (subExpr.value[0] === "literal") {
+          // TODO: FIXME should test the type of the literal
+          if (argType.includes("object")) {
+            return {
+              ...subExpr,
+              value: {testing: "TESTING"},
+            }
+          }
+          else if (argType.includes("array")) {
+            return {
+              ...subExpr,
+              value: ["TESTING"],
+            }
+          }
+        }
+        return subExpr;
+      })
+    }
+    return expr;
+
+  }
+  return expr;
+}
+
+function retypeLiterals (expr, types) {
+  const out = retypeFunc({
+    ...expr,
+    children: expr.children.map((subExpr) => retypeLiterals(subExpr, types)),
+  }, types);
+
+  return out ;
+}
+
 function renameFunctions (expr, renames) {
   const out = renameFunc({
     ...expr,
@@ -226,5 +266,6 @@ export function toArrayAst(doc, tree, texprl) {
 
   top = collapseBinaryExpr(top);
   top = renameFunctions(top, texprl.functionRenames);
+  top = retypeLiterals(top, texprl.functionTypes);
   return top;
 }
