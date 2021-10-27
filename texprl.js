@@ -12,12 +12,14 @@ class TexprlEditor {
     this.lookup = opts.lookup ? opts.lookup : [];
     this.runtime = opts.runtime ? opts.runtime : () => {};
     this.functionRenames = (opts.functions || {}).renames || [];
+    this.functionAutocomplete =
+      (opts.functions || {}).autocomplete || (() => []);
     this.functionTypes = (opts.functions || {}).types || {};
-    this.runtimeEnabled = false;
+    this.runtimeEnabled = !!opts.runtimeEnabled;
 
     // Initialize plugins...
     this._widgetPlugin = widgetsPlugin(this);
-    this._parserPlugin = parserPlugin(this.onLookup);
+    this._parserPlugin = parserPlugin(this);
     this._runtimePlugin = runtimePlugin(this);
   }
 

@@ -5,6 +5,12 @@ const definition = {
     dictionary: true,
   },
   functions: {
+    // TODO: This should probably be split out to autocomplete
+    //  - function names
+    //  - argument names
+    autocomplete: (fnName, index) => {
+      return [];
+    },
     renames: [
       ["%", "mod"],
       ["^", "pow"],

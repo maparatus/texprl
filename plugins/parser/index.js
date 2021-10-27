@@ -31,8 +31,18 @@ const pseudoClasses = [
   "zoom",
 ].map((name) => ({ type: "class", label: name }));
 
+function getIndex(node) {
+  let index = 0;
+  while ((node = node.prevSibling)) {
+    index++;
+  }
+  return index;
+}
+
 const span = /^[\w-]*/;
-const completionSource = (lookupCallback) => {
+const completionSource = (texprl) => {
+  const lookupCallback = texprl.lookup;
+
   return (context) => {
     const lookup = lookupCallback();
     let { state, pos } = context,
@@ -56,44 +66,26 @@ const completionSource = (lookupCallback) => {
       return { from: node.from, options: pseudoClasses, span };
     } else if (node.parent && node.parent.type.name === "FunctionExpr") {
       let parentValue = state.doc.slice(node.parent.from, node.parent.to);
-      if (parentValue.toString().match(/^device/)) {
-        return {
-          from: node.from + 1,
-          options: [
-            {
-              type: "class",
-              label: "current_date_time",
-              detail: "— date and time on the device",
-            },
-            {
-              type: "class",
-              label: "current_latitude",
-              detail: "— latitude part of the devices location",
-            },
-            {
-              type: "class",
-              label: "current_longitude",
-              detail: "— longitude part of the devices location",
-            },
-            {
-              type: "class",
-              label: "current_latitude_longitude",
-              detail: "— longitude and latitude of the devices location",
-            },
-          ],
-          filter: false,
-          span,
-        };
-      }
+
+      const index = getIndex(node);
+      const [, fnName] = parentValue.toString().match(/^(.*)\(/);
+      const options = texprl.functionAutocomplete(fnName, index);
+
+      return {
+        from: node.from + 1,
+        options: options,
+        filter: false,
+        span,
+      };
     }
 
     return null;
   };
 };
 
-function pluginSetup(lookupCallback) {
+function pluginSetup(texprl) {
   const completion = exampleLanguage.data.of({
-    autocomplete: completionSource(lookupCallback),
+    autocomplete: completionSource(texprl),
   });
   return new LanguageSupport(exampleLanguage, [completion]);
 }
