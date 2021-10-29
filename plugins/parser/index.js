@@ -7,7 +7,10 @@ import { syntaxTree } from "@codemirror/language";
 export const exampleLanguage = LRLanguage.define({
   parser,
   languageData: {
-    closeBrackets: { brackets: ["(", "[", '"'] },
+    closeBrackets: {
+      brackets: ["(", "[", '"', "{"],
+      before: ",)]}\"",
+    },
     indentOnInput: /^\s*[\}\]]$/,
   },
 });

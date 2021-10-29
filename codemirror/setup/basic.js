@@ -21,10 +21,7 @@ const basicSetup = [
   indentOnInput(),
   defaultHighlightStyle.fallback,
   bracketMatching(),
-  closeBrackets({
-    brackets: ["(", "[", "{", '"'],
-    before: ")]}\"",
-  }),
+  closeBrackets(),
   autocompletion(),
   highlightActiveLine(),
   keymap.of([
