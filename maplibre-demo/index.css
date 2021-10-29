@@ -43,12 +43,16 @@ body {
   height: 50%;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .editor-geojson {
   height: 50%;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
@@ -65,6 +69,7 @@ label {
   resize: none;
   background: #fff;
   border-right: solid 1px #cfd8dc;
+  overflow-y: auto;
 }
 
 .texprl__radius {
@@ -73,6 +78,7 @@ label {
   resize: none;
   background: #fff;
   border-right: solid 1px #cfd8dc;
+  overflow-y: auto;
 }
 
 @media (max-width: 600px) {
