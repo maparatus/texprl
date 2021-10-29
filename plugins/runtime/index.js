@@ -1,6 +1,6 @@
 import { StateEffect, StateField } from "@codemirror/state";
 import { Decoration } from "@codemirror/view";
-import { toArrayAst } from "../../parser/index.js";
+import { toArrayAst, astHasError } from "../../parser/index.js";
 import { EditorView } from "@codemirror/view";
 import { syntaxTree } from "@codemirror/language";
 import { showPanel } from "@codemirror/panel";
@@ -102,16 +102,26 @@ export default function runtimeMarks(texprl) {
       },
       // This is called whenever the editor updates—it computes the new set
       update(value, tr) {
+        if (tr.state.doc.length === 0) {
+          return value;
+        }
+
         const ast = toArrayAst(tr.state.doc, syntaxTree(tr.state), texprl);
+        const hasError = astHasError(ast);
+
+        value = value.update({
+          filter: () => false,
+        });
+
+        if (hasError) {
+          return value;
+        }
+
         const json = toJson(ast);
         const result = texprl.runtime(json[0]);
 
         // Move the decorations to account for document changes
         value = value.map(tr.changes);
-
-        value = value.update({
-          filter: () => false,
-        });
 
         if (!texprl.runtimeEnabled) {
           return value;

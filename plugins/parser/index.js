@@ -39,7 +39,7 @@ function getIndex(node) {
   return index;
 }
 
-const span = /^[\w-]*/;
+const span = /^[\w]*/;
 const completionSource = (texprl) => {
   const lookupCallback = texprl.lookup;
 
@@ -63,13 +63,18 @@ const completionSource = (texprl) => {
         span,
       };
     } else if (node.type.name === "FunctionExpr") {
-      return { from: node.from, options: pseudoClasses, span };
+      const options = texprl.functionAutocomplete();
+      return {
+        from: node.from,
+        options: options,
+        span
+      };
     } else if (node.parent && node.parent.type.name === "FunctionExpr") {
       let parentValue = state.doc.slice(node.parent.from, node.parent.to);
 
       const index = getIndex(node);
       const [, fnName] = parentValue.toString().match(/^(.*)\(/);
-      const options = texprl.functionAutocomplete(fnName, index);
+      const options = texprl.argAutocomplete(fnName, index);
 
       return {
         from: node.from + 1,

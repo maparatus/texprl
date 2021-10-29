@@ -25,7 +25,7 @@ commaSep1<expr> { expr ("," expr?)* }
 }
 
 FunctionExpr {
-  functionStart commaSep<expression> functionEnd
+  functionName ("(" commaSep<expression> ")")?
 }
 
 List { "[" commaSep<expression> "]" }
@@ -73,8 +73,7 @@ BinaryExpression {
   Bool { "true" | "false" }
   dictionaryName { $[a-z_]+ ($[a-z_0-9]+)* }
   VariableName { "$" $[a-z_]+ ($[a-z_0-9]+)* }
-  functionStart { $[a-z_]+ ($[a-z_0-9]+)* "(" }
-  functionEnd { ")" }
+  functionName { $[a-z_]+ ($[a-z_0-9]+)* }
   Integer { ($[-])* std.digit+ }
   Float { ($[-])* std.digit+ "." std.digit+ }
   Number { Integer | Float }
@@ -88,5 +87,5 @@ BinaryExpression {
   space { std.whitespace+ }
   Lookup { "#" ($[a-z_0-9]+)* }
 
-  @precedence { Lookup, Number, Bool }
+  @precedence { Lookup, Number, Bool, functionName }
 }

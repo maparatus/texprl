@@ -1,3 +1,48 @@
+import { v8 } from "maplibre-gl/dist/style-spec";
+
+let specFns = Object.entries(v8.expression_name.values).map(([key, value]) => {
+  return {
+    name: key,
+    doc: value.doc
+  }
+});
+
+/**
+ * Add in some missing functions and docs
+ */
+specFns = specFns.concat([
+  {
+    name: "linear",
+    doc: "Interpolates linearly between the pair of stops just less than and just greater than the input.",
+  },
+  {
+    name: "exponential",
+    doc: "Interpolates exponentially between the stops just less than and just greater than the input.",
+  },
+  {
+    name: "cubic-bezier",
+    doc: "Interpolates using the cubic bezier curve defined by the given control points.",
+  },
+]);
+
+
+const expressionFns = specFns.map(({name, doc}) => {
+  const renameFn = (name) => {
+    if (name === "-") {
+      return name;
+    }
+    return name.replace(/-/g, "_");
+  }
+
+  return {
+    type: "class",
+    label: renameFn(name),
+    detail: `— ${doc}`,
+  };
+});
+
+
+
 const definition = {
   features: {
     lookup: false,
@@ -5,11 +50,11 @@ const definition = {
     dictionary: true,
   },
   functions: {
-    // TODO: This should probably be split out to autocomplete
-    //  - function names
-    //  - argument names
-    autocomplete: (fnName, index) => {
+    argAutocomplete: () => {
       return [];
+    },
+    functionAutocomplete: () => {
+      return expressionFns;
     },
     renames: [
       ["%", "mod"],

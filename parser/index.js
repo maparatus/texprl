@@ -151,6 +151,16 @@ function toObj(doc, node, texprl) {
   return [node.type.name];
 }
 
+export function astHasError (ast) {
+  if (Array.isArray(ast.value) && ast.value[0] === "$$ERROR") {
+    return true;
+  }
+
+  return !ast.children.every(c => {
+    return !astHasError(c);
+  });
+}
+
 function collapseBinaryExpr(node) {
   const nodeIsArray = Array.isArray(node.value);
   if (

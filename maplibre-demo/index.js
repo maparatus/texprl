@@ -219,7 +219,7 @@ const maplibreCustomDefinition = {
   runtimeEnabled: true,
   functions: {
     ...maplibreDefinition.functions,
-    autocomplete: (fnName, index) => {
+    argAutocomplete: (fnName, index) => {
       if (["get", "has"].includes(fnName) && index === 0) {
         return earthQuakeDef.map((d) => {
           return {
@@ -231,7 +231,7 @@ const maplibreCustomDefinition = {
       }
 
       // Fallback
-      return maplibreDefinition.functions.autocomplete(fnName, index);
+      return maplibreDefinition.functions.argAutocomplete(fnName, index);
     },
   },
 };
