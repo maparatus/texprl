@@ -102,7 +102,21 @@ const state = EditorState.create({
   ],
 });
 
+
 const view = new EditorView({
   state: state,
   parent: el,
+});
+
+
+actionAutoformatButton.addEventListener("click", () => {
+  console.log("actionAutoformatButton", state, view);
+  const tx = state.update({
+    changes: {
+      from: 0,
+      to: state.doc.length,
+      insert: "TODO"
+    }
+  });
+  view.update([tx]);
 });
