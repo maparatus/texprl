@@ -208,17 +208,6 @@ editor.setLookup([
         >
         syntax tree.
       </p>
-      <h3>Function usage errors</h3>
-      <p>
-        We don't have any concept of types for function arguments, so the
-        following <em>although invalid</em> won't show us any errors
-      </p>
-      <pre><code>rgb(255, rgb(100, 10, 10), 10)</code></pre>
-      <p>
-        This should be handled by the thing actually running the code (or the
-        JSON representation of it), we do however need to add hooks to show
-        those errors in the editor.
-      </p>
     </div>
 
     <footer class="footer">
