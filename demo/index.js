@@ -110,12 +110,19 @@ const view = new EditorView({
 
 
 actionAutoformatButton.addEventListener("click", () => {
-  console.log("actionAutoformatButton", state, view);
-  const tx = state.update({
+  const ast = toArrayAst(
+    view.state.doc,
+    syntaxTree(view.state),
+    texprl
+  );
+  const json = toJson(ast);
+  const formatted = fromArrayAst(json, texprl);
+
+  const tx = view.state.update({
     changes: {
       from: 0,
-      to: state.doc.length,
-      insert: "TODO"
+      to: view.state.doc.length,
+      insert: formatted,
     }
   });
   view.update([tx]);

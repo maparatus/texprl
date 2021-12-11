@@ -53,6 +53,10 @@ function convertExpr(v, texprl, parent) {
   if (isMath(v)) {
     return toMath(v, texprl, parent);
   }
+  else if (v[0] === "$$ERROR") {
+    // HACK: For an ERROR the first arg is the text
+    return v[1];
+  }
   // TODO: FIXME
   else if (Array.isArray(v) && v[0] === "read") {
     const out = texprl.checkLookupFromBackendId(v[1]);
@@ -65,7 +69,7 @@ function convertExpr(v, texprl, parent) {
     const fnName = v[0];
     let beginSep = "";
     let endSep = "";
-    if (["all", "any"].includes(fnName)) {
+    if (["all", "any"].includes(fnName) && v.length > 1) {
       beginSep = "\n  ";
       endSep = "\n";
       sep = ",\n  ";
@@ -102,29 +106,41 @@ function toObj(doc, node, texprl) {
   //   return out;
   // }
   if (node.type.name === "Dictionary") {
-    return ["literal"];
+    return {
+      value: ["literal"]
+    };
   }
   if (node.type.name === "Number") {
     let value = doc.slice(node.from, node.to);
-    return Number(value.toString());
+    return {
+      value: Number(value.toString())
+    };
   }
   if (node.type.name === "Bool") {
     let value = doc.slice(node.from, node.to);
-    return value.toString() === "true" ? true : false;
+    return {
+      value: value.toString() === "true" ? true : false
+    };
   }
   if (node.type.name === "Lookup") {
     let value = doc.slice(node.from, node.to);
     const found = texprl.checkLookup(value.toString().replace(/^#/, ""));
     if (found) {
-      return found.backendId;
+      return {
+        value: found.backendId
+      };
     }
   }
   if (node.type.name === "String") {
     let value = doc.slice(node.from, node.to);
-    return value.toString().replace(/^"|"$/g, "");
+    return {
+      value: value.toString().replace(/^"|"$/g, "")
+    };
   }
   if (node.type.name === "List") {
-    return ["array"];
+    return {
+      value: ["array"]
+    };
   }
   const MathSymbols = {
     Div: "/",
@@ -133,22 +149,40 @@ function toObj(doc, node, texprl) {
     Minus: "-",
   };
   if (Object.keys(MathSymbols).includes(node.type.name)) {
-    return [MathSymbols[node.type.name]];
+    return {
+      value: [MathSymbols[node.type.name]]
+    };
   }
   if (node.type.name === "Program") {
-    return [];
+    return {
+      value: []
+    };
   }
   if (node.type.name === "FunctionExpr") {
     let value = doc
       .slice(node.from, node.to)
       .toString()
       .replace(/[(][\s\S]+$/m, "");
-    return [value];
+    return {
+      value: [value]
+    };
   }
   if (node.type.name === "⚠") {
-    return ["$$ERROR"];
+    let text = doc.slice(node.from, node.to)
+    const v = text.text.join("");
+
+    return {
+      value: ["$$ERROR"],
+      children: [{
+        // HACK: Should we trim here???
+        value: v.trim()
+      }],
+      skip: node.to,
+    }
   }
-  return [node.type.name];
+  return {
+    value: [node.type.name]
+  };
 }
 
 export function astHasError (ast) {
@@ -173,12 +207,14 @@ function collapseBinaryExpr(node) {
     if (node.children[2]) children.push(collapseBinaryExpr(node.children[2]));
     return {
       ...node.children[1],
-      children: children,
+      children: children
+        // HACK Maybe?!?
+        .concat(node.children.slice(3)),
     };
   } else {
     return {
       ...node,
-      children: node.children.map(collapseBinaryExpr),
+      children: node.children ? node.children.map(collapseBinaryExpr) : undefined,
     };
   }
 }
@@ -260,14 +296,23 @@ export function toArrayAst(doc, tree, texprl) {
   const map = new Map();
   let top;
 
+  let skip = -1;
   const cursor = tree.cursor();
   do {
     const node = cursor.node;
+    const p = toObj(doc, node, texprl);
+    if (skip > node.from) {
+      console.debug("skipping: node=", node);
+      continue;
+    }
+    if (p.skip) {
+      skip = p.skip;
+    }
     const obj = {
       from: node.from,
       to: Math.min(node.to, tree.length - 1),
-      value: toObj(doc, node, texprl),
-      children: [],
+      children: p.children || [],
+      value: p.value,
     };
     if (!top) {
       top = obj;
@@ -281,7 +326,8 @@ export function toArrayAst(doc, tree, texprl) {
   } while (cursor.next());
 
   top = collapseBinaryExpr(top);
-  top = renameFunctions(top, texprl.functionRenames);
-  top = retypeLiterals(top, texprl.functionTypes);
+  // TODO: Add back in
+  // top = renameFunctions(top, texprl.functionRenames);
+  // top = retypeLiterals(top, texprl.functionTypes);
   return top;
 }
