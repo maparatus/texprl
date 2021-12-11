@@ -17,10 +17,23 @@ const langOperators = {
  */
 const operators = {
   ...langOperators,
-  pow: (a, b) => Math.pow(a, b),
-  at: (index, arr) => {
+  pow: (a, b) => {
+    let errAt;
+    if (!Number.isNumber(a)) errAt = 0;
+    if (!Number.isNumber(b)) errAt = 1;
+    if (errAt) {
+      throw new RuntimeError("Argument must be Number", {
+        path: this.path.concat(errAt),
+      })
+    }
+    return Math.pow(a, b);
+  },
+  at: function (index, arr) {
     if (!Array.isArray(arr)) {
-      return;
+      // TODO: Should throw error at argument path.
+      throw new RuntimeError("Argument must be array", {
+        path: this.path.concat(1)
+      });
     }
     return arr.at(index);
   },
@@ -40,7 +53,12 @@ function _call(arr, errors, path = [0]) {
       const argsToPass = args.map((i, index) =>
         _call(i, errors, path.concat(index))
       );
-      return operators[op].apply(undefined, argsToPass);
+      try {
+        return operators[op].apply({path}, argsToPass);
+      }
+      catch(err) {
+        errors.push(err);
+      }
     } else {
       // TODO: This should throw errors with positional info.
       errors.push(
