@@ -12,8 +12,6 @@ function checkArgs(def, args, context) {
     return;
   }
 
-  console.log(">>> args", args);
-
   // Check number of arguments...
   if (def.args.length && args.length !== def.args.length) {
     throw new RuntimeError(
@@ -27,7 +25,6 @@ function checkArgs(def, args, context) {
   // Check types of arguments...
   if (def.args.def) {
     const errAt = def.args.def.findIndex((t, idx) => {
-      console.log("@@@", { t, item: args[idx] });
       if (typeof t === "function" && t.prototype) {
         return !(args[idx] instanceof t);
       }
@@ -45,7 +42,6 @@ function checkArgs(def, args, context) {
       let message = `Argument ${errAt} must be ${expectedType}`;
       if (def.args.binaryExpression) {
         message = `Expected ${expectedType}`;
-        console.log("YUP");
       }
       throw new RuntimeError(message, {
         path: context.path.concat(errAt),
@@ -58,7 +54,6 @@ export function generateValidatedOperators(ops = []) {
   const out = {};
   ops.forEach((op) => {
     out[op.name] = function (...args) {
-      console.log(">>>>> [%s]", op.name, args);
       checkArgs(op, args, this);
       return op.handler.apply(this, args);
     };
