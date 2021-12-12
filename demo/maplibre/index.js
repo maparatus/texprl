@@ -1,14 +1,14 @@
-import { basicSetup } from "../codemirror";
+import { basicSetup } from "../../codemirror";
 import { EditorView } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
 import { syntaxTree } from "@codemirror/language";
-import maplibreDefinition from "../maplibre";
+import maplibreDefinition from "../../maplibre";
 import maplibregl from "maplibre-gl";
 import { expression } from "maplibre-gl/dist/style-spec";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import "../texprl.css";
-import texprl, { toArrayAst } from "../texprl.js";
+import "../../texprl.css";
+import texprl, { toArrayAst } from "../../texprl.js";
 
 const map = new maplibregl.Map({
   // hash: true,

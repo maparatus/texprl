@@ -1,5 +1,5 @@
-import { RuntimeError } from "../errors";
-import { generateValidatedOperators } from "../runtime-helpers";
+import { RuntimeError } from "../../errors";
+import { generateValidatedOperators } from "../../runtime-helpers";
 import Vector from "./Vector.js";
 
 

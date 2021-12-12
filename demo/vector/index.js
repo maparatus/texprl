@@ -1,13 +1,13 @@
-import { basicSetup } from "../codemirror";
+import { basicSetup } from "../../codemirror";
 import { EditorView } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
 import stringify from "json-stringify-pretty-compact";
 import runtime from "./runtime.js";
 import { syntaxTree } from "@codemirror/language";
-import maplibreDefinition from "../maplibre";
+import maplibreDefinition from "../../maplibre";
 
-import "../texprl.css";
-import texprl, { toArrayAst, fromArrayAst } from "../texprl.js";
+import "../../texprl.css";
+import texprl, { toArrayAst, fromArrayAst } from "../../texprl.js";
 
 const qs = document.querySelector.bind(document);
 const debugEl = qs("#debug");
