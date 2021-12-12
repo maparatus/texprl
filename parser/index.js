@@ -249,7 +249,7 @@ function collapseBinaryExpr(node) {
   }
 }
 
-function renameFunc(expr, renames) {
+function renameFunc(expr, renames=[]) {
   if (Array.isArray(expr.value)) {
     const currentFunctionName = expr.value[0];
     const found = renames.find(([astName, textName]) => {
