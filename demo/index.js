@@ -48,7 +48,7 @@ function showDebugInfo(texprl) {
         if (result.errors.length > 0) {
           exprResultEl.value = "";
           exprErrorEl.innerHTML = result.errors
-            .map((err) => err.message)
+            .map((err) => "Error: "+err.message)
             .join("<br>");
         } else {
           exprResultEl.value = JSON.stringify(result.output);
