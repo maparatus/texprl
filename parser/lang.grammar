@@ -25,7 +25,7 @@ commaSep1<expr> { expr ("," expr?)* }
 }
 
 FunctionExpr {
-  functionName ("(" commaSep<expression> ")")?
+  functionName ("(" commaSep<expression> ")")
 }
 
 List { "[" commaSep<expression> "]" }

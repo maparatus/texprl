@@ -38,7 +38,9 @@ function toMath(v, texprl, parent) {
   const currentPrecedence = getPrecedence(v);
   const out = [
     convertExpr(v[1], texprl, v),
+    " ",
     v[0],
+    " ",
     convertExpr(v[2], texprl, v),
   ].join("");
 
@@ -74,10 +76,19 @@ function convertExpr(v, texprl, parent) {
       endSep = "\n";
       sep = ",\n  ";
     }
-    const args = v
-      .slice(1)
-      .map((iv) => convertExpr(iv, texprl, v))
-      .join(sep);
+
+    const inputArgs = v.slice(1);
+
+    const args = inputArgs
+      .map((iv, index) => {
+        let prefix = "";
+        if (index > 0 && (!iv || iv[0] !== "$$ERROR")) {
+          prefix = sep;
+        }
+        return prefix + convertExpr(iv, texprl, v)
+      })
+      .join("");
+
     return `${v[0]}(${beginSep}${args}${endSep})`;
   } else {
     return JSON.stringify(v);
@@ -163,6 +174,7 @@ function toObj(doc, node, texprl) {
       .slice(node.from, node.to)
       .toString()
       .replace(/[(][\s\S]+$/m, "");
+
     return {
       value: [value]
     };

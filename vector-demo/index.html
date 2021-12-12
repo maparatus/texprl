@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>texprl</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+  </head>
+  <body>
+    <div class="main">
+      <h1>Mixed vector and number runtime</h1>
+      <p>
+        A demo with a runtime that supports numbers and vectors.
+      </p>
+      <p>
+         <code>Number</code> supports the following methods
+      </p>
+      <ul>
+        <li>
+          <code>+</code> addition <code>1 + 1</code> returns <code>Number</code>
+        </li>
+        <li>
+          <code>-</code> subtraction <code>2 - 1</code> returns <code>Number</code>
+        </li>
+        <li>
+          <code>*</code> multiplication <code>2 * 2</code> returns <code>Number</code>
+        </li>
+        <li>
+          <code>/</code> division <code>2 / 1</code> returns <code>Number</code>
+        </li>
+      </ul>
+      <p>
+      You can create a <code>Vector</code> with <code>vec(Number x, Number y)</code> and supports the following methods
+      </p>
+      <ul>
+        <li>
+          <code>+</code> addition <code>vec(1,1) + vec(1,1)</code> returns <code>Vector</code>
+        </li>
+        <li>
+          <code>-</code> subtraction <code>vec(1,1) + vec(1,1)</code> returns <code>Vector</code>
+        </li>
+        <li>
+          <code>*</code> multiplication <code>vec(2,2) * 3</code> returns <code>Vector</code>
+        </li>
+        <li>
+          <code>/</code> multiplication <code>vec(2,2) / 2</code> returns <code>Vector</code>
+        </li>
+        <li>
+          <code>len(Vector)</code> length of vector <code>len(vec(1, 1))</code> returns <code>Number</code>
+        </li>
+        <li>
+          <code>norm(Vector)</code> make the vector a length of <code>1</code>, <code>norm(vec(2, 2))</code> returns <code>Vector</code>
+        </li>
+      </ul>
+      <h3 id="h-demo">Demo</h3>
+      <div class="editor-panes">
+        <p>
+          The texprl code editor —
+          <button id="action-auto-format">Auto format</button>
+        </p>
+        <div>
+          <div id="editor"></div>
+          <div id="expr-result-container">
+            <label>result=<input disabled id="expr-result" /></label>
+            <span id="expr-error"></span>
+          </div>
+        </div>
+        <p>The JSON representation</p>
+        <textarea
+          id="s-expr"
+          style="width: 100%; height: 200px"
+          readonly
+        ></textarea>
+        <p>The raw text output</p>
+        <textarea
+          id="debug"
+          style="width: 100%; height: 200px"
+          readonly
+        ></textarea>
+        <p>
+          The formatted code. Not complete, see "<a href="#h-code-formatter"
+            >Code formatter</a
+          >" below.
+        </p>
+        <textarea
+          id="formatted"
+          style="width: 100%; height: 200px"
+          readonly
+          placeholder="TODO…"
+        ></textarea>
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      Find the source code on
+      <a rel="noopener noreferrer" href="http://github.com/orangemug/texprl"
+        >GitHub</a
+      >
+      and report bugs in the
+      <a
+        rel="noopener noreferrer"
+        href="http://github.com/orangemug/texprl/issues"
+        >issue tracker</a
+      >
+    </footer>
+
+    <!-- scripts -->
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>
