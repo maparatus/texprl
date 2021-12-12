@@ -34,7 +34,7 @@ A full list of widgets in the editor so far are
 - `date` -
 - `reference` -
 
-The editor plugin also supports contextual autocomplete, we can define arguments on named functions. In [maplibre-expressions][maplibre-expressions] we have a [`get`][maplibre-expressions-get] method which returns data from the map feature properties. We can make the autocomplete for that function context aware and show the list of available properies. See [TODO]() for a demo of this.
+The editor plugin also supports contextual autocomplete, we can define arguments on named functions. In [maplibre-expressions][maplibre-expressions] we have a [`get`][maplibre-expressions-get] method which returns data from the map feature properties. We can make the autocomplete for that function context aware and show the list of available properties. See [TODO]() for a demo of this.
 
 ## Install
 
