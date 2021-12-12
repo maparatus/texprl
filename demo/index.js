@@ -114,10 +114,10 @@ actionAutoformatButton.addEventListener("click", () => {
   const ast = toArrayAst(
     view.state.doc,
     syntaxTree(view.state),
-    texprl
+    texprlInstance,
   );
   const json = toJson(ast);
-  const formatted = fromArrayAst(json, texprl);
+  const formatted = fromArrayAst(json, texprlInstance);
 
   const tx = view.state.update({
     changes: {
