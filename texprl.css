@@ -1,0 +1,17 @@
+.texprl input[type="date"],
+.texprl input[type="datetime-local"] {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.texprl input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper,
+.texprl input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  display: none;
+}
+
+.texprl input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.texprl input[type="date"]::-webkit-calendar-picker-indicator {
+  margin: 0;
+  opacity: 0;
+}

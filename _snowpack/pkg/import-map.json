@@ -1,0 +1,21 @@
+{
+  "imports": {
+    "@codemirror/autocomplete": "./@codemirror/autocomplete.js",
+    "@codemirror/closebrackets": "./@codemirror/closebrackets.js",
+    "@codemirror/commands": "./@codemirror/commands.js",
+    "@codemirror/highlight": "./@codemirror/highlight.js",
+    "@codemirror/history": "./@codemirror/history.js",
+    "@codemirror/language": "./@codemirror/language.js",
+    "@codemirror/matchbrackets": "./@codemirror/matchbrackets.js",
+    "@codemirror/panel": "./@codemirror/panel.js",
+    "@codemirror/state": "./@codemirror/state.js",
+    "@codemirror/view": "./@codemirror/view.js",
+    "@lezer/lr": "./@lezer/lr.js",
+    "assert": "./assert.js",
+    "color": "./color.js",
+    "json-stringify-pretty-compact": "./json-stringify-pretty-compact.js",
+    "maplibre-gl": "./maplibre-gl.js",
+    "maplibre-gl/dist/maplibre-gl.css": "./maplibre-gl/dist/maplibre-gl.css",
+    "maplibre-gl/dist/style-spec": "./maplibre-gl/dist/style-spec.js"
+  }
+}

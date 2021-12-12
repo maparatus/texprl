@@ -1,0 +1,21 @@
+version: "3.2"
+services:
+  dev:
+    image: node:14.17.4-stretch
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../:/code:delegated
+      # On macos sharing folders with a large amount of files is very slow,
+      # this adds that directory as a shared module.
+      # - v_node_modules:/code/node_modules:delegated
+    environment:
+      PORT: 8000
+    networks:
+      - webnet
+    working_dir: /code
+    command: sh
+volumes:
+  v_node_modules:
+networks:
+  webnet:
