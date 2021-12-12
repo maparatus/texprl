@@ -98,10 +98,16 @@ const operators = generateValidatedOperators([
   },
   {
     name: "equals",
+    args: {
+      length: 2,
+    },
     handler: (a, b) => a === b,
   },
   {
     name: "not_equals",
+    args: {
+      length: 2,
+    },
     handler: (a, b) => a !== b,
   },
   {
