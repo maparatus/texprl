@@ -138,7 +138,13 @@ function toObj(doc, node, texprl) {
     const found = texprl.checkLookup(value.toString().replace(/^#/, ""));
     if (found) {
       return {
-        value: found.backendId
+        value: ["read"],
+        children: [
+          {
+            value: found.backendId,
+            children: []
+          }
+        ],
       };
     }
   }
@@ -291,12 +297,17 @@ function retypeLiterals(expr, types) {
 }
 
 function renameFunctions(expr, renames) {
+  let children;
+  if (expr.children) {
+    children = expr.children.map((subExpr) =>
+      renameFunctions(subExpr, renames)
+    );
+  }
+
   const out = renameFunc(
     {
       ...expr,
-      children: expr.children.map((subExpr) =>
-        renameFunctions(subExpr, renames)
-      ),
+      children,
     },
     renames
   );
@@ -339,7 +350,7 @@ export function toArrayAst(doc, tree, texprl) {
 
   top = collapseBinaryExpr(top);
   // TODO: Add back in
-  // top = renameFunctions(top, texprl.functionRenames);
+  top = renameFunctions(top, texprl.functionRenames);
   // top = retypeLiterals(top, texprl.functionTypes);
   return top;
 }

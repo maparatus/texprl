@@ -63,7 +63,6 @@ const operators = generateValidatedOperators([
       def: ["string"],
     },
     handler: function (key) {
-      console.log("!!!! READ:", key)
       return this.lookupRef(key);
     },
   },
@@ -78,7 +77,7 @@ const operators = generateValidatedOperators([
     },
   },
   {
-    name: "pow",
+    name: "^",
     args: {
       length: 2,
       def: ["number", "number"],
@@ -126,15 +125,13 @@ function _call(texprlInstance, arr, errors, path = [0]) {
 
     if (operators[op]) {
       const argsToPass = args.map((i, index) =>
-        _call(i, errors, path.concat(index))
+        _call(texprlInstance, i, errors, path.concat(index))
       );
       try {
-        console.log("????? args:", args);
         return operators[op].apply({
           path,
           lookupRef: (v) => {
-            const obj = texprlInstance.checkLookup(v);
-            console.log("lookupRef", {v, obj});
+            const obj = texprlInstance.checkLookupFromBackendId(v);
             if (obj) {
               return obj.backendId;
             }
