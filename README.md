@@ -1,6 +1,6 @@
 # texprl
 
-**T**iny **expr**ession **l**anguage, is a very small language similar to languages found in speadsheets. Designed to create really simple expressions, no loops, function definition or complex control flow. Like spreadsheet formulas it's designed to be easy to learn.
+**T**iny **expr**ession **l**anguage, is a very small language similar to languages found in spreadsheets. Designed to create really simple expressions, no loops, function definition or complex control flow. Like spreadsheet formulas it's designed to be easy to learn.
 
 The language doesn't have a runtime but rather generates the _json-expression_ syntax as an output. This is designed to be run by a backend like [maplibre][maplibre-expressions]/[mapbox-gl][mapbox-gl-expressions] expression engines or a custom runtime of your creation.
 

@@ -1,7 +1,9 @@
 {
   "name": "texprl",
+  "description": "A very small language similar to languages found in spreadsheets",
   "private": true,
   "main": "texprl.js",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "npm run build:grammar && snowpack --config config/snowpack.config.mjs dev",
