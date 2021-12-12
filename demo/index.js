@@ -48,7 +48,7 @@ function showDebugInfo(texprl) {
         if (result.errors.length > 0) {
           exprResultEl.value = "";
           exprErrorEl.innerHTML = result.errors
-            .map((err) => "Error: "+err.message)
+            .map((err) => "Error: " + err.message)
             .join("<br>");
         } else {
           exprResultEl.value = JSON.stringify(result.output);
@@ -103,18 +103,16 @@ const state = EditorState.create({
   ],
 });
 
-
 const view = new EditorView({
   state: state,
   parent: el,
 });
 
-
 actionAutoformatButton.addEventListener("click", () => {
   const ast = toArrayAst(
     view.state.doc,
     syntaxTree(view.state),
-    texprlInstance,
+    texprlInstance
   );
   const json = toJson(ast);
   const formatted = fromArrayAst(json, texprlInstance);
@@ -124,7 +122,7 @@ actionAutoformatButton.addEventListener("click", () => {
       from: 0,
       to: view.state.doc.length,
       insert: formatted,
-    }
+    },
   });
   view.update([tx]);
 });

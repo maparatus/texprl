@@ -22,9 +22,13 @@
       </p>
       <p>
         The primary aim is to be a language that can be used across maputnik
-        expressions and the <a target="_blank" rel="noopener noreferrer" href="https://fielda.com/">fielda</a> form builder. It is therefore a language
-        without a runtime, it just returns a syntax tree in an array syntax
-        suitable for storing in a file/database. See
+        expressions and the
+        <a target="_blank" rel="noopener noreferrer" href="https://fielda.com/"
+          >fielda</a
+        >
+        form builder. It is therefore a language without a runtime, it just
+        returns a syntax tree in an array syntax suitable for storing in a
+        file/database. See
         <a
           rel="noopener noreferrer"
           href="https://docs.maptiler.com/gl-style-specification/expressions/"
@@ -170,8 +174,7 @@ editor.setLookup([
           readonly
         ></textarea>
         <p>
-          The formatted code, see "<a href="#h-code-formatter"
-            >Code formatter</a
+          The formatted code, see "<a href="#h-code-formatter">Code formatter</a
           >" below.
         </p>
         <textarea
@@ -184,10 +187,12 @@ editor.setLookup([
       <h2 id="h-advanced-examples">Advanced examples</h2>
       <ul>
         <li>
-          <a href="./vector/">Mixed number/vector</a> — an example with a mixed <code>Vector</code>/<code>Number</code> runtime.
+          <a href="./vector/">Mixed number/vector</a> — an example with a mixed
+          <code>Vector</code>/<code>Number</code> runtime.
         </li>
         <li>
-          <a href="./maplibre/">Maplibre</a> — an example using maplibre expressions.
+          <a href="./maplibre/">Maplibre</a> — an example using maplibre
+          expressions.
         </li>
       </ul>
 
@@ -196,27 +201,24 @@ editor.setLookup([
       <h3 id="h-code-formatter">Code formatter</h3>
       <p>
         The code formatter is in it's early stages. It mostly just adds some
-        whitespace around binary expressions. So the expression with a
-        structure of
+        whitespace around binary expressions. So the expression with a structure
+        of
       </p>
       <pre><code>["foo", ["+", 1, 1], 2, 3]</code></pre>
       <p>To something like the following</p>
       <pre><code>foo(1 + 1, 2, 3)</code></pre>
       <p>
-      This requires more work and will need to be <em>function aware</em> in future. An example of this would be maplibre expressions
+        This requires more work and will need to be <em>function aware</em> in
+        future. An example of this would be maplibre expressions
       </p>
       <pre><code>interpolate(linear(),get("mag"),2,2,6,6)</code></pre>
-      <p>
-        Would be best formateted as argument pairs, so
-      </p>
+      <p>Would be best formateted as argument pairs, so</p>
       <pre><code>interpolate(
   linear(), get("mag"),
   2, 2,
   6, 6,
 )</code></pre>
-      <p>
-        We need to do a lot more work here.
-      </p>
+      <p>We need to do a lot more work here.</p>
       <h3>Parse errors</h3>
       <p>
         We currently don't display parse errors in the codemirror editor. We do

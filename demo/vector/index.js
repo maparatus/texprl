@@ -94,19 +94,13 @@ const state = EditorState.create({
   ],
 });
 
-
 const view = new EditorView({
   state: state,
   parent: el,
 });
 
-
 actionAutoformatButton.addEventListener("click", () => {
-  const ast = toArrayAst(
-    view.state.doc,
-    syntaxTree(view.state),
-    texprl
-  );
+  const ast = toArrayAst(view.state.doc, syntaxTree(view.state), texprl);
   const json = toJson(ast);
   const formatted = fromArrayAst(json, texprl);
 
@@ -115,7 +109,7 @@ actionAutoformatButton.addEventListener("click", () => {
       from: 0,
       to: view.state.doc.length,
       insert: formatted,
-    }
+    },
   });
   view.update([tx]);
 });

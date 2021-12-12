@@ -15,7 +15,7 @@ const langOperators = [
   },
   {
     name: "+",
-    handler: (a, b) => (a + b),
+    handler: (a, b) => a + b,
     args: {
       length: 2,
       binaryExpression: true,
@@ -24,7 +24,7 @@ const langOperators = [
   },
   {
     name: "-",
-    handler: (a, b) => (a - b),
+    handler: (a, b) => a - b,
     args: {
       length: 2,
       binaryExpression: true,
@@ -128,17 +128,19 @@ function _call(texprlInstance, arr, errors, path = [0]) {
         _call(texprlInstance, i, errors, path.concat(index))
       );
       try {
-        return operators[op].apply({
-          path,
-          lookupRef: (v) => {
-            const obj = texprlInstance.checkLookupFromBackendId(v);
-            if (obj) {
-              return obj.backendId;
-            }
+        return operators[op].apply(
+          {
+            path,
+            lookupRef: (v) => {
+              const obj = texprlInstance.checkLookupFromBackendId(v);
+              if (obj) {
+                return obj.backendId;
+              }
+            },
           },
-        }, argsToPass);
-      }
-      catch(err) {
+          argsToPass
+        );
+      } catch (err) {
         errors.push(err);
       }
     } else {

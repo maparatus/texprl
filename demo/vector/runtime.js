@@ -2,7 +2,6 @@ import { RuntimeError } from "../../errors";
 import { generateValidatedOperators } from "../../runtime-helpers";
 import Vector from "./Vector.js";
 
-
 /**
  * There operators are for named functions, you can add anything you like here.
  */
@@ -16,11 +15,11 @@ const operators = generateValidatedOperators([
   {
     name: "+",
     handler: (a, b) => {
-      console.log("?????", {a,b});
-      if (typeof(a) === "number") {
+      console.log("?????", { a, b });
+      if (typeof a === "number") {
         return a + b;
       }
-      return a.add(b)
+      return a.add(b);
     },
     args: {
       length: 2,
@@ -30,7 +29,7 @@ const operators = generateValidatedOperators([
   {
     name: "-",
     handler: (a, b) => {
-      if (typeof(a) === "number") {
+      if (typeof a === "number") {
         return a - b;
       }
       return a.substract(b);
@@ -43,7 +42,7 @@ const operators = generateValidatedOperators([
   {
     name: "/",
     handler: (a, b) => {
-      if (typeof(a) === "number") {
+      if (typeof a === "number") {
         return a / b;
       }
       return a.divide(b);
@@ -56,7 +55,7 @@ const operators = generateValidatedOperators([
   {
     name: "*",
     handler: (a, b) => {
-      if (typeof(a) === "number") {
+      if (typeof a === "number") {
         return a * b;
       }
       return a.multiply(b);
@@ -120,9 +119,8 @@ function _call(arr, errors, path = [0]) {
         _call(i, errors, path.concat(index))
       );
       try {
-        return operators[op].apply({path}, argsToPass);
-      }
-      catch(err) {
+        return operators[op].apply({ path }, argsToPass);
+      } catch (err) {
         errors.push(err);
       }
     } else {

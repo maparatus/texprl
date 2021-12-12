@@ -3,8 +3,8 @@ import { v8 } from "maplibre-gl/dist/style-spec";
 let specFns = Object.entries(v8.expression_name.values).map(([key, value]) => {
   return {
     name: key,
-    doc: value.doc
-  }
+    doc: value.doc,
+  };
 });
 
 /**
@@ -25,14 +25,13 @@ specFns = specFns.concat([
   },
 ]);
 
-
-const expressionFns = specFns.map(({name, doc}) => {
+const expressionFns = specFns.map(({ name, doc }) => {
   const renameFn = (name) => {
     if (name === "-") {
       return name;
     }
     return name.replace(/-/g, "_");
-  }
+  };
 
   return {
     type: "class",
@@ -40,8 +39,6 @@ const expressionFns = specFns.map(({name, doc}) => {
     detail: `— ${doc}`,
   };
 });
-
-
 
 const definition = {
   features: {

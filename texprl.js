@@ -14,8 +14,7 @@ class TexprlEditor {
     this.functionRenames = (opts.functions || {}).renames || [];
     this.functionAutocomplete =
       (opts.functions || {}).functionAutocomplete || (() => []);
-    this.argAutocomplete =
-      (opts.functions || {}).argAutocomplete || (() => []);
+    this.argAutocomplete = (opts.functions || {}).argAutocomplete || (() => []);
     this.functionTypes = (opts.functions || {}).types || {};
     this.runtimeEnabled = !!opts.runtimeEnabled;
 

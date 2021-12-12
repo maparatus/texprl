@@ -54,8 +54,7 @@ function convertExpr(v, texprl, parent) {
   let sep = ", ";
   if (isMath(v)) {
     return toMath(v, texprl, parent);
-  }
-  else if (v[0] === "$$ERROR") {
+  } else if (v[0] === "$$ERROR") {
     // HACK: For an ERROR the first arg is the text
     return v[1];
   }
@@ -86,7 +85,7 @@ function convertExpr(v, texprl, parent) {
         if (index > 0 && (!iv || iv[0] !== "$$ERROR")) {
           prefix = sep;
         }
-        return prefix + convertExpr(iv, texprl, v)
+        return prefix + convertExpr(iv, texprl, v);
       })
       .join("");
 
@@ -119,19 +118,19 @@ function toObj(doc, node, texprl) {
   // }
   if (node.type.name === "Dictionary") {
     return {
-      value: ["literal"]
+      value: ["literal"],
     };
   }
   if (node.type.name === "Number") {
     let value = doc.slice(node.from, node.to);
     return {
-      value: Number(value.toString())
+      value: Number(value.toString()),
     };
   }
   if (node.type.name === "Bool") {
     let value = doc.slice(node.from, node.to);
     return {
-      value: value.toString() === "true" ? true : false
+      value: value.toString() === "true" ? true : false,
     };
   }
   if (node.type.name === "Lookup") {
@@ -143,19 +142,18 @@ function toObj(doc, node, texprl) {
         children: [
           {
             value: found.backendId,
-            children: []
-          }
+            children: [],
+          },
         ],
       };
-    }
-    else {
+    } else {
       return {
         value: ["read"],
         children: [
           {
-            value: "$$MISSING:"+value,
-            children: []
-          }
+            value: "$$MISSING:" + value,
+            children: [],
+          },
         ],
       };
     }
@@ -163,12 +161,12 @@ function toObj(doc, node, texprl) {
   if (node.type.name === "String") {
     let value = doc.slice(node.from, node.to);
     return {
-      value: value.toString().replace(/^"|"$/g, "")
+      value: value.toString().replace(/^"|"$/g, ""),
     };
   }
   if (node.type.name === "List") {
     return {
-      value: ["array"]
+      value: ["array"],
     };
   }
   const MathSymbols = {
@@ -179,12 +177,12 @@ function toObj(doc, node, texprl) {
   };
   if (Object.keys(MathSymbols).includes(node.type.name)) {
     return {
-      value: [MathSymbols[node.type.name]]
+      value: [MathSymbols[node.type.name]],
     };
   }
   if (node.type.name === "Program") {
     return {
-      value: []
+      value: [],
     };
   }
   if (node.type.name === "FunctionExpr") {
@@ -194,33 +192,35 @@ function toObj(doc, node, texprl) {
       .replace(/[(][\s\S]+$/m, "");
 
     return {
-      value: [value]
+      value: [value],
     };
   }
   if (node.type.name === "⚠") {
-    let text = doc.slice(node.from, node.to)
+    let text = doc.slice(node.from, node.to);
     const v = text.text.join("");
 
     return {
       value: ["$$ERROR"],
-      children: [{
-        // HACK: Should we trim here???
-        value: v.trim()
-      }],
+      children: [
+        {
+          // HACK: Should we trim here???
+          value: v.trim(),
+        },
+      ],
       skip: node.to,
-    }
+    };
   }
   return {
-    value: [node.type.name]
+    value: [node.type.name],
   };
 }
 
-export function astHasError (ast) {
+export function astHasError(ast) {
   if (Array.isArray(ast.value) && ast.value[0] === "$$ERROR") {
     return true;
   }
 
-  return !ast.children.every(c => {
+  return !ast.children.every((c) => {
     return !astHasError(c);
   });
 }
@@ -244,12 +244,14 @@ function collapseBinaryExpr(node) {
   } else {
     return {
       ...node,
-      children: node.children ? node.children.map(collapseBinaryExpr) : undefined,
+      children: node.children
+        ? node.children.map(collapseBinaryExpr)
+        : undefined,
     };
   }
 }
 
-function renameFunc(expr, renames=[]) {
+function renameFunc(expr, renames = []) {
   if (Array.isArray(expr.value)) {
     const currentFunctionName = expr.value[0];
     const found = renames.find(([astName, textName]) => {

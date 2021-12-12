@@ -9,7 +9,7 @@ export const exampleLanguage = LRLanguage.define({
   languageData: {
     closeBrackets: {
       brackets: ["(", "[", '"', "{"],
-      before: ",)]}\"",
+      before: ',)]}"',
     },
     indentOnInput: /^\s*[\}\]]$/,
   },
@@ -70,7 +70,7 @@ const completionSource = (texprl) => {
       return {
         from: node.from,
         options: options,
-        span
+        span,
       };
     } else if (node.parent && node.parent.type.name === "FunctionExpr") {
       let parentValue = state.doc.slice(node.parent.from, node.parent.to);
