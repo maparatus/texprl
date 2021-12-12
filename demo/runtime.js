@@ -57,6 +57,27 @@ const langOperators = [
 const operators = generateValidatedOperators([
   ...langOperators,
   {
+    name: "read",
+    args: {
+      length: 1,
+      def: ["string"],
+    },
+    handler: function (key) {
+      console.log("!!!! READ:", key)
+      return this.lookupRef(key);
+    },
+  },
+  {
+    name: "len",
+    args: {
+      length: 1,
+      def: ["string"],
+    },
+    handler: function (a, b) {
+      return a.length;
+    },
+  },
+  {
     name: "pow",
     args: {
       length: 2,
@@ -98,7 +119,7 @@ const operators = generateValidatedOperators([
   },
 ]);
 
-function _call(arr, errors, path = [0]) {
+function _call(texprlInstance, arr, errors, path = [0]) {
   if (Array.isArray(arr)) {
     const [op] = arr;
     const args = arr.slice(1);
@@ -108,7 +129,17 @@ function _call(arr, errors, path = [0]) {
         _call(i, errors, path.concat(index))
       );
       try {
-        return operators[op].apply({path}, argsToPass);
+        console.log("????? args:", args);
+        return operators[op].apply({
+          path,
+          lookupRef: (v) => {
+            const obj = texprlInstance.checkLookup(v);
+            console.log("lookupRef", {v, obj});
+            if (obj) {
+              return obj.backendId;
+            }
+          },
+        }, argsToPass);
       }
       catch(err) {
         errors.push(err);
@@ -126,10 +157,10 @@ function _call(arr, errors, path = [0]) {
   }
 }
 
-export default function call(arr) {
+export default function call(instance, arr) {
   const errors = [];
   return {
-    output: _call(arr, errors),
+    output: _call(instance, arr, errors),
     errors,
   };
 }

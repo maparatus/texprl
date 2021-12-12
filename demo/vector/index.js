@@ -86,7 +86,7 @@ const texprlInstance = texprl({
 });
 
 const state = EditorState.create({
-  doc: "vec(2,2)/2*3",
+  doc: "len(vec(2,2)/2*3)",
   extensions: [
     basicSetup,
     texprlInstance.plugin(),

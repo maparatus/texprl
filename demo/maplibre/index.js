@@ -31,14 +31,14 @@ map.on("load", function () {
 });
 
 const expressions = {
-  "circle-radius": ["interpolate", ["linear"], ["get", "mag"], 2, 2, 7, 4],
+  "circle-radius": ["interpolate", ["linear"], ["get", "mag"], 2, 2, 6, 6],
   "circle-color": [
     "interpolate-hcl",
     ["linear"],
     ["get", "mag"],
     -1,
     "blue",
-    7,
+    8,
     "red",
   ],
 };
@@ -307,7 +307,7 @@ createEditor(
   `interpolate(
   linear(), get("mag"),
   2, 2,
-  7, 4,
+  6, 6,
 )`
 );
 
@@ -317,6 +317,6 @@ createEditor(
   `interpolate_hcl(
   linear(), get("mag"),
   -1, rgb(0, 0, 255),
-  7, rgb(255, 0, 0),
+  8, rgb(255, 0, 0),
 )`
 );

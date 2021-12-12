@@ -43,7 +43,7 @@ function showDebugInfo(texprl) {
 
     if (useRuntime) {
       try {
-        const result = runtime(json[0]);
+        const result = runtime(texprlInstance, json[0]);
 
         if (result.errors.length > 0) {
           exprResultEl.value = "";
@@ -94,7 +94,8 @@ useRuntimeEl.addEventListener("change", (e) => {
 });
 
 const state = EditorState.create({
-  doc: "1-1-1+9+pow(2, 2)",
+  // doc: "1-1-1+9+pow(2, 2)",
+  doc: "#jane",
   extensions: [
     basicSetup,
     texprlInstance.plugin(),
