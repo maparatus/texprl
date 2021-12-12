@@ -52,7 +52,7 @@
           <a href="#h-advanced-examples">Advanced examples</a>
         </li>
         <li>
-          <a href="#h-missing-features">Missing features</a>
+          <a href="#h-known-issues">Known issues</a>
         </li>
       </ul>
       <h2 id="h-features">Features</h2>
@@ -170,7 +170,7 @@ editor.setLookup([
           readonly
         ></textarea>
         <p>
-          The formatted code. Not complete, see "<a href="#h-code-formatter"
+          The formatted code, see "<a href="#h-code-formatter"
             >Code formatter</a
           >" below.
         </p>
@@ -191,25 +191,31 @@ editor.setLookup([
         </li>
       </ul>
 
-      <h2 id="h-missing-features">Missing features</h2>
-      <p>This library is early in development and is missing some features.</p>
+      <h2 id="h-known-issues">Known issues</h2>
+      <p>This library is early in development and has some known issues.</p>
       <h3 id="h-code-formatter">Code formatter</h3>
       <p>
-        At the moment we're simply setting the editor contents to a string
-        value. However in reality we won't have the "code string" the users
-        entered previously. but instead a JSON representation (AST-ish I guess).
-        So we need to create a formatter that goes from this
+        The code formatter is in it's early stages. It mostly just adds some
+        whitespace around binary expressions. So the expression with a
+        structure of
       </p>
-      <pre><code>["foo", ["equals", "aaa", "bbb"], ["not_equals", "ccc", "ddd"]]</code></pre>
+      <pre><code>["foo", ["+", 1, 1], 2, 3]</code></pre>
       <p>To something like the following</p>
-      <pre><code>foo(
-  equals("aaa", "bbb"),
-  not_equals("ccc", "ddd")
+      <pre><code>foo(1 + 1, 2, 3)</code></pre>
+      <p>
+      This requires more work and will need to be <em>function aware</em> in future. An example of this would be maplibre expressions
+      </p>
+      <pre><code>interpolate(linear(),get("mag"),2,2,6,6)</code></pre>
+      <p>
+        Would be best formateted as argument pairs, so
+      </p>
+      <pre><code>interpolate(
+  linear(), get("mag"),
+  2, 2,
+  6, 6,
 )</code></pre>
       <p>
-        Basically a much simplier version of
-        <a rel="noopener noreferrer" href="https://prettier.io/">prettier</a>
-        for texprl.
+        We need to do a lot more work here.
       </p>
       <h3>Parse errors</h3>
       <p>
