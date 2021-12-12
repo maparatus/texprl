@@ -61,11 +61,12 @@ function convertExpr(v, texprl, parent) {
   }
   // TODO: FIXME
   else if (Array.isArray(v) && v[0] === "read") {
-    const out = texprl.checkLookupFromBackendId(v[1]);
+    const key = v[1];
+    const out = texprl.checkLookupFromBackendId(key);
     if (out) {
       return `#${out.editorId}`;
     } else {
-      return `#invalid`;
+      return `${key.replace(/\$\$MISSING:/, "")}`;
     }
   } else if (Array.isArray(v)) {
     const fnName = v[0];
@@ -142,6 +143,17 @@ function toObj(doc, node, texprl) {
         children: [
           {
             value: found.backendId,
+            children: []
+          }
+        ],
+      };
+    }
+    else {
+      return {
+        value: ["read"],
+        children: [
+          {
+            value: "$$MISSING:"+value,
             children: []
           }
         ],
